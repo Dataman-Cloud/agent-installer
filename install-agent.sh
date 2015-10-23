@@ -11,6 +11,7 @@ DM_HOST=${DM_HOST:-https://DASHBOARD/}
 SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-https://dev.dataman.io:8000/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
+TLS_CERT=false
 
 check_host_arch()
 {
@@ -107,7 +108,8 @@ start_omega_agent() {
   {
     "DockerHost":"${DOCKER_HOST}",
     "OmegaHost":"${DM_HOST}",
-    "OmegaUUID":"${OMEGA_UUID}"
+    "OmegaUUID":"${OMEGA_UUID}",
+    "AgentCert":${TLS_CERT}
   }
 EOF
  cat > /etc/omega/agent/uninstall.sh <<EOF
