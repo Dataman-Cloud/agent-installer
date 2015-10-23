@@ -2,14 +2,14 @@
 set -e
 #
 # Usage:
-# curl -Ls https://FILE_SCRIPTS/install.sh | sudo -H sh -s [OmegaUUID]
+# curl -Ls https://$DM_HOST/install.sh | sudo -H sh -s [OmegaUUID]
 #
 
 export DEBIAN_FRONTEND=noninteractive
 DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
-DM_HOST=${DM_HOST:-https://DASHBOARD/}
+DM_HOST=${DM_HOST:-https://streaming.shurenyun.com/}
 SUPPORT_URL=https://www.shurenyun.com
-FILES_URL=${FILES_URL:-https://dev.dataman.io:8000/files}
+FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
 
