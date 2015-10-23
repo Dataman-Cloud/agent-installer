@@ -7,7 +7,7 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
-DM_HOST=${DM_HOST:-https://streaming.shurenyun.com/}
+DM_HOST=${DM_HOST:-wss://streaming.shurenyun.com/}
 SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
