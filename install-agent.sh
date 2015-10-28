@@ -12,6 +12,7 @@ SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
+OMEGA_AGENT_NAME=${OMEGA_AGENT_NAME:-omega-agent}
 
 check_host_arch()
 {
@@ -182,12 +183,12 @@ do_install()
     fedora|centos)
     (
     echo "-> Installing omega-agent..."
-    echo "-> Downloading omega-agent from ${FILES_URL}/omega-agent.x86_64.rpm"
-    $curl -o /tmp/omega-agent.x86_64.rpm ${FILES_URL}/omega-agent.x86_64.rpm
+    echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
+    $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
     if command_exists /usr/bin/omega-agent; then
       yum remove -y -q omega-agent
     fi
-    yum install -y -q /tmp/omega-agent.x86_64.rpm
+    yum install -y -q /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm
 
     start_omega_agent
     )
@@ -196,9 +197,9 @@ do_install()
     ubuntu|debian)
     (
       echo "-> Installing omega-agent..."
-      echo "-> Downloading omega-agent from ${FILES_URL}/omega-agent_amd64.deb"
-      $curl -o /tmp/omega-agent_amd64.deb ${FILES_URL}/omega-agent_amd64.deb
-      dpkg -i /tmp/omega-agent_amd64.deb
+      echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb"
+      $curl -o /tmp/${OMEGA_AGENT_NAME}_amd64.deb ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb
+      dpkg -i /tmp/${OMEGA_AGENT_NAME}_amd64.deb
 
       start_omega_agent
     )
