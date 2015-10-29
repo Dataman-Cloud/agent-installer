@@ -132,7 +132,7 @@ EOF
 
 deploy_docker() {
   echo "-> Deploying Docker Runtime Environment..."
-  if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'|awk '{print $3}') \< "1.5.0" ]; then
+  if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
     echo "Docker was not installed or the version is too old"
     case "$(get_distribution_type)" in
       ubuntu|debian)
