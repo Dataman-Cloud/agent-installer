@@ -125,7 +125,7 @@ start_omega_agent() {
     "OmegaHost":"${DM_HOST}",
     "OmegaUUID":"${OMEGA_UUID}",
     "AgentCert":${TLS_CERT},
-    "Version":${OMEGA_AGENT_VERSION}
+    "Version":"${OMEGA_AGENT_VERSION}"
   }
 EOF
  cat > /etc/omega/agent/uninstall.sh <<EOF
