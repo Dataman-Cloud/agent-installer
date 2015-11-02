@@ -12,7 +12,8 @@ SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
-OMEGA_AGENT_NAME=${OMEGA_AGENT_NAME:-omega-agent}
+OMEGA_AGENT_VERSION=${OMEGA_AGENT_VERSION:-v1.0}
+OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
 
 check_host_arch()
 {
@@ -123,7 +124,8 @@ start_omega_agent() {
     "DockerHost":"${DOCKER_HOST}",
     "OmegaHost":"${DM_HOST}",
     "OmegaUUID":"${OMEGA_UUID}",
-    "AgentCert":${TLS_CERT}
+    "AgentCert":${TLS_CERT},
+    "Version":${OMEGA_AGENT_VERSION}
   }
 EOF
  cat > /etc/omega/agent/uninstall.sh <<EOF
