@@ -68,7 +68,7 @@ check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
   then
     echo "Omega Agent service is running now... "
-    echo "Wraning!!! Continue installation will overwrite the original version"
+    echo "Warning!!! Continue installation will overwrite the original version"
     while true; do
     echo "Are you sure to continue install [Y/N]"
     read answer
