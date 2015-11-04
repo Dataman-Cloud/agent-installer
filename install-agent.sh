@@ -12,8 +12,7 @@ SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
-OMEGA_AGENT_VERSION=${OMEGA_AGENT_VERSION:-v1.0}
-OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
+OMEGA_AGENT_NAME=${OMEGA_AGENT_NAME:-omega-agent}
 
 check_host_arch()
 {
@@ -68,8 +67,21 @@ check_netcat()
 check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
   then
-    echo "Omega Agent service running.Stop omega-agent"
-    service omega-agent stop > /dev/null 2>&1
+    echo "Omega Agent service is running now... "
+    echo "Warning!!! Continue installation will overwrite the original version"
+    while true; do
+    echo "Are you sure to continue install [Y/N]"
+    read answer
+    case $answer in 
+      Y|y|yes|YES)
+      service omega-agent stop > /dev/null 2>&1
+      break
+      ;;
+      N|n|NO|no)
+      exit 1
+      ;;
+    esac
+  done
   fi
 }
 
@@ -111,8 +123,7 @@ start_omega_agent() {
     "DockerHost":"${DOCKER_HOST}",
     "OmegaHost":"${DM_HOST}",
     "OmegaUUID":"${OMEGA_UUID}",
-    "AgentCert":${TLS_CERT},
-    "Version":"${OMEGA_AGENT_VERSION}"
+    "AgentCert":${TLS_CERT}
   }
 EOF
  cat > /etc/omega/agent/uninstall.sh <<EOF
