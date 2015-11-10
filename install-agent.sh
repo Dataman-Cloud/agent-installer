@@ -67,18 +67,24 @@ check_netcat()
 
 check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
-	  then
-	    echo "Omega Agent service is running now... "
-	    echo "Wraning!!! Continue installation will overwrite the original version"
-	    install_wait=10
-	        while [ $install_wait -gt 0 ]
-	        do
-	           echo "new omega-agent will install after ${install_wait}s" 
-	           install_wait=`expr $install_wait - 1`
-	           sleep 1s
-	        done
-	fi
+          then
+            echo "Omega Agent service is running now... "
+            echo "Wraning!!! Continue installation will overwrite the original version"
+            install_wait=11
+                while true 
+                do
+                   if [ $install_wait -eq 1 ]
+                        then
+                        service omega-agent stop > /dev/null 2>&1
+                        break
+                   fi
+                   install_wait=`expr $install_wait - 1`
+                   echo "new omega-agent will install after ${install_wait}s" 
+                   sleep 1s
+                done
+        fi
 }
+
 
 get_distribution_type()
 {
