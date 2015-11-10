@@ -54,17 +54,6 @@ check_curl()
   echo $curl
 }
 
-check_netcat()
-{
-  if command_exists nc; then
-    # Do Nothing
-    echo
-  else
-    echo >&2 'Error: omega agent needs nc. You should install nc first.'
-    exit 1
-  fi
-}
-
 check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
           then
@@ -182,7 +171,6 @@ do_install()
   check_host_arch
   check_omega_uuid_exists
   curl=$(check_curl)
-  check_netcat
   check_omega_agent
 
   deploy_docker
