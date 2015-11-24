@@ -78,6 +78,7 @@ check_omega_agent() {
 select_iface()
 {
     if ls /bin/bash > /dev/null 
+        then
         echo "Omega-agent use default network interface is eth0."
         echo "Do you want to change it? [Y/N]"
         read -t 5 change_ifcae
@@ -102,7 +103,6 @@ select_iface()
             ;;
         esac
     else
-        then
         echo "There is no bash command in your systerm can not choose network interface" 
     fi
 }
