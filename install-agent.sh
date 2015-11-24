@@ -75,42 +75,36 @@ check_omega_agent() {
         fi
 }
 
-read_timeout() {
-    trap : USR1
-    trap 'kill "$pid" 2> /dev/null' EXIT
-    (sleep "$1" && kill -USR1 "$$") & pid=$!
-    read "$2"
-    ret=$?
-    kill "$pid" 2> /dev/null
-    trap - EXIT
-    return "$ret"
-}
-
 select_iface()
 {
-    echo "Omega-agent use default network interface is etho."
-    echo "Do you want to change it? [Y/N]"
-    read_timeout 5 change_ifcae
-    case $change_ifcae  in 
-        Y|y|YES|yes)
-        while true; do 
-            echo "Please choose network interface from below list: "
-            echo `ls /sys/class/net/`
-            read iface
-            check_cmd="ls /sys/class/net/${iface}"
-            if ${check_cmd} > /dev/null
-                then
-                EN_NAME=$iface
-                break
-            else
-                echo "Network interface ${iface} not find"
-            fi
-        done
-        ;;
-        N|n|NO|No)
-            echo "Network interface use eth0"
-        ;;
-    esac
+    if ls /bin/bash > /dev/null 
+        then
+        echo "There is no bash command in your systerm can not choose network interface"
+    else
+        echo "Omega-agent use default network interface is eth0."
+        echo "Do you want to change it? [Y/N]"
+        read -t 5 change_ifcae
+        case $change_ifcae  in 
+            Y|y|YES|yes)
+            while true; do 
+                echo "Please choose network interface from below list: "
+                echo `ls /sys/class/net/`
+                read iface
+                check_cmd="ls /sys/class/net/${iface}"
+                if ${check_cmd} > /dev/null
+                    then
+                    EN_NAME=$iface
+                    break
+                else
+                    echo "Network interface ${iface} not find"
+                fi
+            done
+            ;;
+            N|n|NO|No|*)
+                echo "Network interface use eth0"
+            ;;
+        esac
+    fi
 }
 
 
