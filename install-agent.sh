@@ -80,6 +80,7 @@ select_iface()
     echo "Omega-agent use default network interface is eth0."
     echo "Do you want to change it? [Y/N]"
     read -t 5 change_ifcae
+    echo "aaaaaaaaaa"
     case $change_ifcae  in 
         Y|y|YES|yes)
         while true; do 
