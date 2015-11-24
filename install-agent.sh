@@ -79,28 +79,31 @@ select_iface()
 {
     echo "Omega-agent use default network interface is eth0."
     echo "Do you want to change it? [Y/N]"
-    read -t 5 change_ifcae
-    echo "aaaaaaaaaa"
-    case $change_ifcae  in 
-        Y|y|YES|yes)
-        while true; do 
-            echo "Please choose network interface from below list: "
-            echo `ls /sys/class/net/`
-            read iface
-            check_cmd="ls /sys/class/net/${iface}"
-            if ${check_cmd} > /dev/null
-                then
-                EN_NAME=$iface
-                break
-            else
-                echo "Network interface ${iface} not find"
-            fi
-        done
-        ;;
-        N|n|NO|No|*)
-            echo "Network interface use eth0"
-        ;;
-    esac
+    if read -t 5 change_ifcae 
+        then
+        case $change_ifcae  in 
+            Y|y|YES|yes)
+            while true; do 
+                echo "Please choose network interface from below list: "
+                echo `ls /sys/class/net/`
+                read iface
+                check_cmd="ls /sys/class/net/${iface}"
+                if ${check_cmd} > /dev/null
+                    then
+                    EN_NAME=$iface
+                    break
+                else
+                    echo "Network interface ${iface} not find"
+                fi
+            done
+            ;;
+            N|n|NO|no|*)
+                echo "Network interface use default eth0"
+            ;;
+        esac
+    else 
+        echo "Network interface use default eth0"
+    fi
 }
 
 
