@@ -100,7 +100,7 @@ select_iface()
             check_cmd="ls /sys/class/net/${iface}"
             if ${check_cmd} > /dev/null
                 then
-                EN_NAME=iface
+                EN_NAME=$iface
                 break
             else
                 echo "Network interface ${iface} not find"
