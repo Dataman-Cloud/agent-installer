@@ -14,6 +14,7 @@ OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
 OMEGA_AGENT_VERSION=${OMEGA_AGENT_VERSION:-v1.0}
 OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
+EN_NAME=${EN_NAME:-eth0}
 
 check_host_arch()
 {
@@ -74,6 +75,37 @@ check_omega_agent() {
         fi
 }
 
+select_iface()
+{
+    echo "Omega-agent use default network interface is eth0."
+    echo "Do you want to change it? [Y/N]"
+    if read -t 5 change_ifcae 
+        then
+        case $change_ifcae  in 
+            Y|y|YES|yes)
+            while true; do 
+                echo "Please choose network interface from below list: "
+                echo `ls /sys/class/net/`
+                read iface
+                check_cmd="ls /sys/class/net/${iface}"
+                if ${check_cmd} > /dev/null
+                    then
+                    EN_NAME=$iface
+                    break
+                else
+                    echo "Network interface ${iface} not find"
+                fi
+            done
+            ;;
+            N|n|NO|no|*)
+                echo "Network interface use default eth0"
+            ;;
+        esac
+    else 
+        echo "Network interface use default eth0"
+    fi
+}
+
 
 get_distribution_type()
 {
@@ -114,7 +146,8 @@ start_omega_agent() {
     "OmegaHost":"${DM_HOST}",
     "OmegaUUID":"${OMEGA_UUID}",
     "AgentCert":${TLS_CERT},
-    "Version":"${OMEGA_AGENT_VERSION}"
+    "Version":"${OMEGA_AGENT_VERSION}",
+    "EnName":"${EN_NAME}"
   }
 EOF
  cat > /etc/omega/agent/uninstall.sh <<EOF
@@ -174,6 +207,7 @@ do_install()
   check_omega_agent
 
   deploy_docker
+  select_iface
 
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
