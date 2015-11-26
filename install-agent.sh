@@ -9,11 +9,11 @@ export DEBIAN_FRONTEND=noninteractive
 DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
 DM_HOST=${DM_HOST:-wss://streaming.shurenyun.com/}
 SUPPORT_URL=https://www.shurenyun.com
-FILES_URL=${FILES_URL:-https://www.shurenyun.com/files}
+FILES_URL=${FILES_URL:-http://agent.shurenyun.com/packages}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
-OMEGA_AGENT_VERSION=${OMEGA_AGENT_VERSION:-v1.0}
-OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
+OMEGA_ENV=${OMEGA_ENV:-prod}
+OMEGA_AGENT_NAME="omega-agent-`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega-agent`"
 EN_NAME=${EN_NAME:-eth0}
 
 check_host_arch()
