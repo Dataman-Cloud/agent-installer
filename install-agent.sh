@@ -13,7 +13,8 @@ FILES_URL=${FILES_URL:-http://agent.shurenyun.com/packages}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
 OMEGA_ENV=${OMEGA_ENV:-prod}
-OMEGA_AGENT_NAME="omega-agent-`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega-agent`"
+OMEGA_AGENT_VERSION=`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega-agent`
+OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
 EN_NAME=${EN_NAME:-eth0}
 
 check_host_arch()
