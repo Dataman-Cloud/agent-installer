@@ -201,7 +201,7 @@ check_docker() {
   fi
 }
 
-
+lsb_version=""
 do_install()
 {
   local curl
@@ -223,6 +223,17 @@ do_install()
     ;;
     fedora|centos)
     (
+     if [ -r /etc/os-release ]; then
+            lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
+            if lsb_version < 7
+            then
+                    echo "ERROR!!! CentOS version is Unsupported"
+                    echo "Learn more: ${SUPPORT_URL}"
+            fi
+    else
+            echo "ERROR!!! CentOS version is Unsupported"
+            echo "Learn more: ${SUPPORT_URL}"
+    fi
     echo "-> Installing omega-agent..."
     echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
     $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
