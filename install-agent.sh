@@ -34,7 +34,7 @@ check_omega_uuid_exists()
   then
       echo 'ERROR: you should install omega-agent with OmegaUUID, like:'
       echo 'curl -sSL https://dev.dataman.io/install.sh | sh -s [OmegaUUID]'
-      exit 0
+      exit 1
   fi
 }
 
@@ -83,7 +83,7 @@ select_iface()
     else
         echo "ERROR!!! The network is can not connect to registry.shurenyun.com"
         echo "Please check your network"
-        exit 0
+        exit 1
     fi
 
     echo "Omega-agent use default network interface is eth0."
@@ -183,7 +183,7 @@ deploy_docker() {
     echo "********************************************************"
     echo "ERROR!!!!  Docker was not installed or the version is too old"
     echo "********************************************************"
-    exit 0 
+    exit 1
   fi
 
   check_docker
@@ -196,9 +196,10 @@ check_docker() {
       echo "Docker service is running now......."
   else
       echo "ERROR!!!! Docker is not running now. Please start docker."
-      exit 0
+      exit 1
   fi
 }
+
 
 do_install()
 {
