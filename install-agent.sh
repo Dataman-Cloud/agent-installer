@@ -57,26 +57,35 @@ check_curl()
 
 check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
-          then
-            echo "Omega Agent service is running now... "
-            echo "Wraning!!! Continue installation will overwrite the original version"
-            install_wait=11
-                while true 
-                do
-                   if [ $install_wait -eq 1 ]
-                        then
-                        service omega-agent stop > /dev/null 2>&1
-                        break
-                   fi
-                   install_wait=`expr $install_wait - 1`
-                   echo "new omega-agent will install after ${install_wait}s" 
-                   sleep 1s
-                done
-        fi
+    then
+      echo "Omega Agent service is running now... "
+      echo "Wraning!!! Continue installation will overwrite the original version"
+      install_wait=11
+          while true 
+          do
+             if [ $install_wait -eq 1 ]
+                  then
+                  service omega-agent stop > /dev/null 2>&1
+                  break
+             fi
+             install_wait=`expr $install_wait - 1`
+             echo "new omega-agent will install after ${install_wait}s" 
+             sleep 1s
+          done
+  fi
 }
 
 select_iface()
 {
+    # check ping registry.shurenyun.com
+    if ping -q -c 1 -W 1 registry.shurenyun.com >/dev/null; then
+        echo "The network to connect registry.shurenyun.com is good "
+    else
+        echo "ERROR!!! The network is can not connect to registry.shurenyun.com"
+        echo "Please check your network"
+        exit 0
+    fi
+
     echo "Omega-agent use default network interface is eth0."
     echo "Do you want to change it? [Y/N]"
     echo "Warnning!!! We will use defalut network interface after 5 second"
@@ -171,31 +180,23 @@ EOF
 deploy_docker() {
   echo "-> Deploying Docker Runtime Environment..."
   if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
-    echo "Docker was not installed or the version is too old"
-    case "$(get_distribution_type)" in
-      ubuntu|debian)
-        sudo apt-get update
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-        if ! [ -f /etc/apt/sources.list.d ]; then
-          mkdir -p /etc/apt/sources.list.d
-        fi
-        echo "deb https://get.docker.com/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
-        apt-get update -qq -o Dir::Etc::sourceparts="/dev/null" -o APT::List-Cleanup=0 -o Dir::Etc::sourcelist="sources.list.d/docker.list"
-        sudo apt-get install -y  aufs-tools lxc-docker
-        sudo service docker restart
-      ;;
-      fedora|centos)
-        sudo yum -y -q update
-        sudo yum -y install docker
-        sudo systemctl start docker.service
-        sudo systemctl enable docker.service
-      ;;
-      *)
-        echo "the os is not supported"
-      ;;
-    esac
+    echo "********************************************************"
+    echo "ERROR!!!!  Docker was not installed or the version is too old"
+    echo "********************************************************"
+    exit 0 
+  fi
+
+  check_docker
+
+}
+
+check_docker() {
+  if ps ax | grep -v grep | grep "docker " > /dev/null
+  then
+      echo "Docker service is running now......."
   else
-    echo "Docker already installed"
+      echo "ERROR!!!! Docker is not running now. Please start docker."
+      exit 0
   fi
 }
 
