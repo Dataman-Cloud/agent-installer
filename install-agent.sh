@@ -230,6 +230,9 @@ do_install()
                     echo "ERROR!!! CentOS version is Unsupported"
                     echo "Learn more: ${SUPPORT_URL}"
             fi
+    else
+            echo "ERROR!!! CentOS version is Unsupported"
+            echo "Learn more: ${SUPPORT_URL}"
     fi
     echo "-> Installing omega-agent..."
     echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
