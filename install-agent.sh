@@ -221,11 +221,11 @@ do_install()
     )
     exit 1
     ;;
-    fedora|centos)
+    fedora|centos|rhel)
     (
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
-            if lsb_version < 7
+            if [ $lsb_version '<' 7 ]
             then
                     echo "ERROR!!! CentOS version is Unsupported"
                     echo "Learn more: ${SUPPORT_URL}"
