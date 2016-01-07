@@ -259,6 +259,10 @@ do_install()
     )
     exit 0
     ;;
+    *)
+      echo "ERROR!! Unknown Systerm !!!!"
+      echo "Learn more: $SUPPORT_URL"
+    ;;
   esac
 }
 
