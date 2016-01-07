@@ -221,7 +221,7 @@ do_install()
     )
     exit 1
     ;;
-    fedora|centos)
+    fedora|centos|rhel)
     (
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
