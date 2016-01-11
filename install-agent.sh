@@ -96,7 +96,7 @@ check_iptables() {
 check_selinux() {
   if command_exists getenforce; then
         echo "Begin to check selinux by command getenforce..."
-        if getenforce | grep "Disabled" > dev/null; then
+        if getenforce | grep "Disabled" > /dev/null; then
               echo "Good. Selinux already closed."
         else 
               echo "Error!! Please close you selinux!"
