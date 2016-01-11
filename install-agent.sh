@@ -76,13 +76,47 @@ check_omega_agent() {
   fi
 }
 
+check_iptables() {
+   if command_exists iptables; then
+          echo "Begin to check iptables...."
+          if sudo iptables -L | grep "DOCKER" > /dev/null; then
+                  echo "Good. Iptables nat already opened."
+          else
+                  echo "Error!! Please make sure your iptables nat is opened !"
+                  echo "Learn more: ${SUPPORT_URL}"
+                  exit 1
+          fi
+  else
+         echo "Error!! Command iptables is not exists!"
+         echo "Learn more: ${SUPPORT_URL}"
+         exit 1
+  fi
+}
+
+check_selinux() {
+  if command_exists getenforce; then
+        echo "Begin to check selinux by command getenforce..."
+        if getenforce | grep "Disabled" > /dev/null; then
+              echo "Good. Selinux already closed."
+        else 
+              echo "Error!! Please close you selinux!"
+              echo "Learn more: ${SUPPORT_URL}"
+        exit 1
+        fi
+  else 
+        echo "Error!! Command getenforce is not exists!"
+        echo "Learn more: ${SUPPORT_URL}" 
+        exit 1
+  fi 
+}
+
 select_iface()
 {
     # check ping registry.shurenyun.com
     if ping -q -c 1 -W 1 registry.shurenyun.com >/dev/null; then
         echo "The network to connect registry.shurenyun.com is good "
     else
-        echo "ERROR!!! The network is can not connect to registry.shurenyun.com"
+        echo "ERROR!!! The network can not connect to registry.shurenyun.com"
         echo "Please check your network"
         exit 1
     fi
@@ -197,6 +231,7 @@ check_docker() {
       echo "Docker service is running now......."
   else
       echo "ERROR!!!! Docker is not running now. Please start docker."
+      echo "Learn more: ${SUPPORT_URL}" 
       exit 1
   fi
 }
@@ -212,6 +247,7 @@ do_install()
 
   deploy_docker
   select_iface
+  check_iptables
 
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
@@ -223,6 +259,7 @@ do_install()
     ;;
     fedora|centos|rhel)
     (
+     check_selinux
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
             if [ $lsb_version '<' 7 ]
@@ -261,7 +298,7 @@ do_install()
     ;;
     *)
       echo "ERROR!! Unknown Systerm !!!!"
-      echo "Learn more: $SUPPORT_URL"
+      echo "Learn more: ${SUPPORT_URL}"
     ;;
   esac
 }
