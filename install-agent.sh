@@ -116,7 +116,7 @@ select_iface()
     if ping -q -c 1 -W 1 registry.shurenyun.com >/dev/null; then
         echo "The network to connect registry.shurenyun.com is good "
     else
-        echo "ERROR!!! The network is can not connect to registry.shurenyun.com"
+        echo "ERROR!!! The network can not connect to registry.shurenyun.com"
         echo "Please check your network"
         exit 1
     fi
