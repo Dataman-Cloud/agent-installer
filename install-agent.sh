@@ -105,7 +105,7 @@ check_selinux() {
         fi
   else 
         echo "Error!! Command getenforce is not exists!"
-        echo "Learn more: ${SUPPORT_URL}"
+        echo "Learn more: ${SUPPORT_URL}" 
         exit 1 
 }
 
@@ -230,6 +230,7 @@ check_docker() {
       echo "Docker service is running now......."
   else
       echo "ERROR!!!! Docker is not running now. Please start docker."
+      echo "Learn more: ${SUPPORT_URL}" 
       exit 1
   fi
 }
@@ -296,7 +297,7 @@ do_install()
     ;;
     *)
       echo "ERROR!! Unknown Systerm !!!!"
-      echo "Learn more: $SUPPORT_URL"
+      echo "Learn more: ${SUPPORT_URL}"
     ;;
   esac
 }
