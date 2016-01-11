@@ -106,7 +106,8 @@ check_selinux() {
   else 
         echo "Error!! Command getenforce is not exists!"
         echo "Learn more: ${SUPPORT_URL}" 
-        exit 1 
+        exit 1
+  fi 
 }
 
 select_iface()
