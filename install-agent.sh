@@ -23,7 +23,7 @@ check_host_arch()
     cat <<EOF
 ERROR: Unsupported architecture: $(uname -m)
 Only x86_64 architectures are supported at this time
-Learn more: $SUPPORT_URL
+Learn more: https://dataman.kf5.com/posts/view/110837/
 EOF
     exit 1
   fi
@@ -83,12 +83,11 @@ check_iptables() {
                   echo "Good. Iptables nat already opened."
           else
                   echo "Error!! Please make sure your iptables nat is opened !"
-                  echo "Learn more: ${SUPPORT_URL}"
+                  echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
                   exit 1
           fi
   else
          echo "Error!! Command iptables is not exists!"
-         echo "Learn more: ${SUPPORT_URL}"
          exit 1
   fi
 }
@@ -100,12 +99,11 @@ check_selinux() {
               echo "Good. Selinux already closed."
         else 
               echo "Error!! Please close you selinux!"
-              echo "Learn more: ${SUPPORT_URL}"
+              echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
   else 
         echo "Error!! Command getenforce is not exists!"
-        echo "Learn more: ${SUPPORT_URL}" 
         exit 1
   fi 
 }
@@ -148,6 +146,7 @@ select_iface()
         esac
     else 
         echo "Network interface use default eth0"
+        echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
     fi
 }
 
@@ -217,6 +216,7 @@ deploy_docker() {
   if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
     echo "********************************************************"
     echo "ERROR!!!!  Docker was not installed or the version is too old"
+    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     echo "********************************************************"
     exit 1
   fi
@@ -231,7 +231,6 @@ check_docker() {
       echo "Docker service is running now......."
   else
       echo "ERROR!!!! Docker is not running now. Please start docker."
-      echo "Learn more: ${SUPPORT_URL}" 
       exit 1
   fi
 }
@@ -253,7 +252,7 @@ do_install()
     gentoo|boot2docker|amzn|linuxmint)
     (
       echo "-> it's unsupported by omega-agent "
-      echo "Learn more: $SUPPORT_URL"
+      echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     )
     exit 1
     ;;
@@ -265,12 +264,12 @@ do_install()
             if [ $lsb_version '<' 7 ]
             then
                     echo "ERROR!!! CentOS version is Unsupported"
-                    echo "Learn more: ${SUPPORT_URL}"
+                    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
                     exit 1
             fi
     else
             echo "ERROR!!! CentOS version is Unsupported"
-            echo "Learn more: ${SUPPORT_URL}"
+            echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
             exit 1
     fi
     echo "-> Installing omega-agent..."
@@ -298,7 +297,7 @@ do_install()
     ;;
     *)
       echo "ERROR!! Unknown Systerm !!!!"
-      echo "Learn more: ${SUPPORT_URL}"
+      echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     ;;
   esac
 }
