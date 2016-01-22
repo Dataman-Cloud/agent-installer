@@ -88,7 +88,6 @@ check_iptables() {
           fi
   else
          echo "Error!! Command iptables is not exists!"
-         echo "Learn more: http://doc.shurenyun.com/faq/index.html"
          exit 1
   fi
 }
@@ -105,7 +104,6 @@ check_selinux() {
         fi
   else 
         echo "Error!! Command getenforce is not exists!"
-        echo "Learn more: http://doc.shurenyun.com/faq/index.html" 
         exit 1
   fi 
 }
