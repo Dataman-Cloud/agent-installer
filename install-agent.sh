@@ -10,6 +10,7 @@ DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
 DM_HOST=${DM_HOST:-wss://streaming.shurenyun.com/}
 SUPPORT_URL=https://www.shurenyun.com
 FILES_URL=${FILES_URL:-http://agent.shurenyun.com/packages}
+REGISTRY_URL=${REGISTRY_URL:-registry.shurenyun.com}
 OMEGA_UUID=${OMEGA_UUID:-$1}
 TLS_CERT=false
 OMEGA_ENV=${OMEGA_ENV:-prod}
@@ -110,11 +111,11 @@ check_selinux() {
 
 select_iface()
 {
-    # check ping registry.shurenyun.com
-    if ping -q -c 1 -W 1 registry.shurenyun.com >/dev/null; then
-        echo "The network to connect registry.shurenyun.com is good "
+    # ping registry.shurenyun.com
+    if ping -q -c 1 -W 1 $REGISTRY_URL >/dev/null; then
+        echo "The network to connect $REGISTRY_URL is good "
     else
-        echo "ERROR!!! The network can not connect to registry.shurenyun.com"
+        echo "ERROR!!! The network can not connect to $REGISTRY_URL"
         echo "Please check your network"
         exit 1
     fi
