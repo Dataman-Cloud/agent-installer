@@ -35,7 +35,7 @@ check_omega_uuid_exists()
 {
   if [ -z "$OMEGA_UUID" ]
   then
-      echo 'ERROR: you should install omega-agent with OmegaUUID, like:'
+      echo -e "\e[41mERROR:\e[0m you should install omega-agent with OmegaUUID, like:"
       echo 'curl -sSL https://dev.dataman.io/install.sh | sh -s [OmegaUUID]'
       exit 1
   fi
@@ -52,7 +52,7 @@ check_curl()
   if command_exists curl; then
      curl='curl --retry 20 --retry-delay 5 -L'
   else
-      echo >&2 'Error: this installer needs curl. You should install curl first.'
+      echo >&2 -e "\e[41mERROR:\e[0m: this installer needs curl. You should install curl first."
       exit 1
   fi
   echo $curl
@@ -62,7 +62,7 @@ check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
     then
       echo "Omega Agent service is running now... "
-      echo "Wraning!!! Continue installation will overwrite the original version"
+      echo -e "\e[41mWraning:\e[0m Continue installation will overwrite the original version"
       install_wait=11
           while true 
           do
@@ -72,7 +72,7 @@ check_omega_agent() {
                   break
              fi
              install_wait=`expr $install_wait - 1`
-             echo "new omega-agent will install after ${install_wait}s" 
+             echo "new omega-agent will install in ${install_wait}s" 
              sleep 1s
           done
   fi
@@ -84,12 +84,12 @@ check_iptables() {
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
                   echo "Good. Iptables nat already opened."
           else
-                  echo "Error!! Please make sure your iptables nat is opened !"
+                  echo -e "\e[41mERROR:\e[0m Please make sure your iptables nat is open"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
                   exit 1
           fi
   else
-         echo "Error!! Command iptables is not exists!"
+         echo -e "\e[41mERROR:\e[0m Command iptables does not exists"
          exit 1
   fi
 }
@@ -100,12 +100,12 @@ check_selinux() {
         if getenforce | grep "Disabled" > /dev/null; then
               echo "Good. Selinux already closed."
         else 
-              echo "Error!! Please close you selinux!"
+              echo -e "\e[41mERROR:\e[0m to make this installation proceeding, please make sure selinux disabled"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
   else 
-        echo "Error!! Command getenforce is not exists!"
+        echo -e "\e[41mERROR:\e[0m Command \e[1mgetenforce\e[0m not found"
         exit 1
   fi 
 }
@@ -113,17 +113,17 @@ check_selinux() {
 check_omega_ports(){
   if command_exists netstat; then
 
-    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
+    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] are available or not"
     for port in ${OMEGA_PORTS}; do
-      if netstat -ant | grep ${port} | grep LISTEN  2>&1 > /dev/null ; then
-        echo "ERORR!!! port ${port} listening already, which suppose to be reverved for omega."
+      if netstat -ant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
+        echo -e "\e[41mERORR:\e[0m port ${port} listening already, which suppose to be reverved for omega."
         exit 1
       fi
     done
     echo "End checking OMEGA ports"
 
   else
-    "Error!! Command netstat does not exists!"
+    echo -e "\e[41mERROR\e[0m Command \e[1mnetstat\e[0m does not exists"
     exit 1
   fi
 }
@@ -134,14 +134,14 @@ select_iface()
     if ping -q -c 1 -W 1 $REGISTRY_URL >/dev/null; then
         echo "The network to connect $REGISTRY_URL is good "
     else
-        echo "ERROR!!! The network can not connect to $REGISTRY_URL"
+        echo -e "\e[41mERROR:\e[0m The network can not connect to $REGISTRY_URL"
         echo "Please check your network"
         exit 1
     fi
 
-    echo "Omega-agent use default network interface is eth0."
-    echo "Do you want to change it? [Y/N]"
-    echo "Warnning!!! We will use defalut network interface after 5 second"
+    echo -e "Omega-agent use default network interface is \e[1meth0\e[0m."
+    echo -e "Do you want to change it? \e[41m[Y/N]\e[0m"
+    echo -e "\e[41mWARN:\e[0m We will use defalut network interface after 5 second"
     if read -t 5 change_ifcae 
         then
         case $change_ifcae  in 
@@ -160,7 +160,7 @@ select_iface()
                 fi
             done
             ;;
-            N|n|NO|no|*)
+            N|n|NO|no)
                 echo "Network interface use default eth0"
             ;;
         esac
@@ -218,7 +218,7 @@ EOF
   service omega-agent stop
 EOF
   service omega-agent restart > /dev/null 2>&1
-  echo "-> Done!"
+  echo -e "-> \e[31mDone\e[0m"
   cat <<EOF
 
   *******************************************************************************
@@ -235,7 +235,7 @@ deploy_docker() {
   echo "-> Deploying Docker Runtime Environment..."
   if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
     echo "********************************************************"
-    echo "ERROR!!!!  Docker was not installed or the version is too old"
+    echo -e "\e[41mERROR:\e[0m  Docker was not installed or the version is too old"
     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     echo "********************************************************"
     exit 1
@@ -250,7 +250,7 @@ check_docker() {
   then
       echo "Docker service is running now......."
   else
-      echo "ERROR!!!! Docker is not running now. Please start docker."
+      echo -e "\e[41mERROR:\e[0m Docker is not running now. Please start docker."
       exit 1
   fi
 }
@@ -284,12 +284,12 @@ do_install()
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
             if [ $lsb_version '<' 7 ]
             then
-                    echo "ERROR!!! CentOS version is Unsupported"
+                    echo -e "\e[41mERROR:\e[0m CentOS version is Unsupported"
                     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
                     exit 1
             fi
     else
-            echo "ERROR!!! CentOS version is Unsupported"
+            echo -e "\e[41mERROR:\e[0m CentOS version is Unsupported"
             echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
             exit 1
     fi
@@ -317,7 +317,7 @@ do_install()
     exit 0
     ;;
     *)
-      echo "ERROR!! Unknown Systerm !!!!"
+      echo -e "\e[41mERROR\e[0m Unknown Operating System"
       echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     ;;
   esac
