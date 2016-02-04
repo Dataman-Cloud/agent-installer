@@ -21,6 +21,7 @@ OMEGA_PORTS=${OMEGA_PORTS:-5050 8080}
 
 check_host_arch()
 {
+  echo "-> Checking host arch ..."
   if [ "$(uname -m)" != "x86_64" ]; then
     cat <<EOF
 ERROR: Unsupported architecture: $(uname -m)
@@ -33,6 +34,7 @@ EOF
 
 check_omega_uuid_exists()
 {
+  echo "-> Making sure Omega UUID exists ..."
   if [ -z "$OMEGA_UUID" ]
   then
       printf "\033[41mERROR:\033[0m you should install omega-agent with OmegaUUID, like:\n"
@@ -50,7 +52,7 @@ check_curl()
   local curl
   curl=''
   if command_exists curl; then
-     curl='curl --retry 20 --retry-delay 5 -L'
+     curl='curl --retry 20 --retry-delay 5 -L -s'
   else
       echo >&2 -e "\033[41mERROR:\033[0m: this installer needs curl. You should install curl first."
       exit 1
@@ -59,12 +61,12 @@ check_curl()
 }
 
 check_omega_agent() {
+  echo "-> Checking old version omega agent exists ... "
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
     then
-      echo "Omega Agent service is running now... "
       printf "\033[41mWraning:\033[0m Continue installation will overwrite the original version\n"
       install_wait=11
-          while true 
+          while true
           do
              if [ $install_wait -eq 1 ]
                   then
@@ -72,17 +74,18 @@ check_omega_agent() {
                   break
              fi
              install_wait=`expr $install_wait - 1`
-             echo "new omega-agent will install in ${install_wait}s" 
+             printf "\rNew omega-agent will install in \033[1m ${install_wait} \033[0m seconds"
              sleep 1s
           done
+          printf "\n"
   fi
 }
 
 check_iptables() {
+   echo "-> Checking iptables open..."
    if command_exists iptables; then
-          echo "Begin to check iptables...."
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
-                  echo "Good. Iptables nat already opened."
+            true
           else
                   printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
@@ -95,11 +98,11 @@ check_iptables() {
 }
 
 check_selinux() {
+  echo "-> Checking selinux by command getenforce..."
   if command_exists getenforce; then
-        echo "Begin to check selinux by command getenforce..."
         if getenforce | grep "Disabled" > /dev/null; then
-              echo "Good. Selinux already closed."
-        else 
+          true
+        else
               printf "\033[41mERROR:\033[0m to make this installation proceeding, please make sure selinux disabled\n"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
@@ -111,17 +114,14 @@ check_selinux() {
 }
 
 check_omega_ports(){
+  echo "-> Checking OMEGA ports [${OMEGA_PORTS}] are available or not..."
   if command_exists netstat; then
-
-    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] are available or not"
     for port in ${OMEGA_PORTS}; do
       if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        printf "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega.\n"
+        printf "\033[41mERORR:\033[0m port ${port} listening already, which supposed to be reverved for omega.\n"
         exit 1
       fi
     done
-    echo "End checking OMEGA ports"
-
   else
     printf "\033[41mERROR\033[0m Command \033[1mnetstat\033[0m does not exists\n"
     exit 1
@@ -130,45 +130,52 @@ check_omega_ports(){
 
 select_iface()
 {
+    echo "-> Network interface selection... "
     # ping registry.shurenyun.com
     if ping -q -c 1 -W 1 $REGISTRY_URL >/dev/null; then
-        echo "The network to connect $REGISTRY_URL is good "
+      true
     else
         printf "\033[41mERROR:\033[0m The network can not connect to $REGISTRY_URL\n"
         echo "Please check your network"
         exit 1
     fi
 
-    printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
-    printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
-    printf "\033[41mWARN:\033[0m We will use defalut network interface after 5 second\n"
-    if read -t 5 change_ifcae 
-        then
-        case $change_ifcae  in 
-            Y|y|YES|yes)
+    remaining_count=10
+
+    while [ ${remaining_count} -gt 0 ]; do
+      printf "\r\033[41mINFO:\033[0m We will use defalut network interface \033[1m${EN_NAME}\033[0m in \033[1m ${remaining_count} \033[0m seconds. Do you want to use another iface \033[41;1m[Y/N]\033[0m"
+      if read -t 1 change_ifcae
+      then
+        printf "\n"
+        case $change_ifcae in
+          Y|y|YES|yes)
             while true; do
-                echo "Please choose network interface from below list: "
-                echo `ls /sys/class/net/`
-                read iface
-                check_cmd="ls /sys/class/net/${iface}"
-                if ${check_cmd} > /dev/null
-                    then
-                    EN_NAME=$iface
-                    break
-                else
-                    echo "Network interface ${iface} not find"
-                fi
+              echo "Please input iface name from the following list: "
+              for iface in `ls /sys/class/net/`; do
+                printf "\033[1m${iface}\033[0m\n"
+              done
+
+              read -p "iface:" iface
+              check_cmd="ls /sys/class/net/${iface}"
+              if ${check_cmd} > /dev/null 2>&1
+              then
+                EN_NAME=$iface
+                break
+              else
+                printf "\033[41mERROR:\033[0m Network interface ${iface} not found\n"
+              fi
             done
             ;;
-            N|n|NO|no)
-                echo "Network interface use default eth0"
+          N|n|NO|no)
+            echo "Network interface use default eth0"
             ;;
         esac
-    else
-        echo "Network interface use default eth0"
-        echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
-    fi
-}
+        break
+      fi
+      remaining_count=$((remaining_count-1))
+    done
+    printf "\n"
+  }
 
 
 get_distribution_type()
@@ -214,22 +221,22 @@ start_omega_agent() {
     "EnName":"${EN_NAME}"
   }
 EOF
- cat > /etc/omega/agent/uninstall.sh <<EOF
-  service omega-agent stop
+  cat > /etc/omega/agent/uninstall.sh <<EOF
+   service omega-agent stop
 EOF
-  service omega-agent restart > /dev/null 2>&1
-  printf "\033[31m Omega Agent Installation Done\033[0m\n"
+  echo "-> Starting omega-agent..."
+  service omega-agent restart #> /dev/null 2>&1
+  echo "-> Done..."
   cat <<EOF
 
-  *******************************************************************************
-  Omega Agent installed successfully
-  *******************************************************************************
+    *******************************************************************************
+    Omega Agent installed successfully
+    *******************************************************************************
 
-  You can view omega-agent log at /var/log/omega/agent.log
-  And You can Start or Stop omega-agent with: service omega-agent start/stop/restart/status
-
+    You can view omega-agent log at /var/log/omega/agent.log
+    And You can Start or Stop omega-agent with: service omega-agent start/stop/restart/status
 EOF
-}
+  }
 
 deploy_docker() {
   echo "-> Deploying Docker Runtime Environment..."
@@ -245,12 +252,13 @@ deploy_docker() {
 }
 
 check_docker() {
+  echo "-> Checking wether docker service started or not..."
   if ps ax | grep -v grep | grep "docker " > /dev/null
   then
-      echo "Docker service is running now......."
+    true
   else
-      printf "\033[41mERROR:\033[0m Docker is not running now. Please start docker.\n"
-      exit 1
+    printf "\033[41mERROR:\033[0m Docker is not running now. Please start docker.\n"
+    exit 1
   fi
 }
 
@@ -270,58 +278,60 @@ do_install()
 
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
-    (
+      (
       echo "-> it's unsupported by omega-agent "
       echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-    )
-    exit 1
-    ;;
+      )
+      exit 1
+      ;;
     fedora|centos|rhel)
-    (
-     check_selinux
-     if [ -r /etc/os-release ]; then
-            lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
-            if [ $lsb_version '<' 7 ]
-            then
-                    printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
-                    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-                    exit 1
-            fi
-    else
-            printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
-            echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-            exit 1
-    fi
-    echo "-> Installing omega-agent..."
-    echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
-    $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
-    if command_exists /usr/bin/omega-agent; then
-      yum remove -y -q omega-agent
-    fi
-    yum install -y -q /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm
-
-    start_omega_agent
-    )
-    exit 0
-    ;;
-    ubuntu|debian)
-    (
+      (
+      check_selinux
+      if [ -r /etc/os-release ]; then
+        lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
+        if [ $lsb_version '<' 7 ]
+        then
+          printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
+          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+          exit 1
+        fi
+      else
+        printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
+        echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+        exit 1
+      fi
+      echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm..."
+      $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
+      if command_exists /usr/bin/omega-agent; then
+        echo "-> Removing old version omega-agent..."
+        yum remove -y -q omega-agent
+      fi
       echo "-> Installing omega-agent..."
-      echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb"
-      $curl -o /tmp/${OMEGA_AGENT_NAME}_amd64.deb ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb
-      dpkg -i /tmp/${OMEGA_AGENT_NAME}_amd64.deb
+      yum install -y -q /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm
 
       start_omega_agent
-    )
-    exit 0
-    ;;
+      )
+      exit 0
+      ;;
+    ubuntu|debian)
+      (
+      echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb..."
+      $curl -o /tmp/${OMEGA_AGENT_NAME}_amd64.deb ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb
+
+      echo "-> Installing omega-agent..."
+      dpkg -i /tmp/${OMEGA_AGENT_NAME}_amd64.deb > /dev/null 2>&1
+
+      start_omega_agent
+      )
+      exit 0
+      ;;
     *)
       printf "\033[41mERROR\033[0m Unknown Operating System\n"
       echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-    ;;
+      ;;
   esac
 }
 
-# wrapped up in a function so that we have some protection against only getting
-# half the file during "curl | sh"
-do_install
+  # wrapped up in a function so that we have some protection against only getting
+  # half the file during "curl | sh"
+  do_install
