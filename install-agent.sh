@@ -2,7 +2,7 @@
 set -e
 #
 # Usage:
-# curl -Ls https://$DM_HOST/install.sh | sudo -H sh -s [OmegaUUID]
+# curl -Ls https://$DM_HOST/install.sh | sudo -H sh -s [OmegaUUID] [iface_name]
 #
 
 export DEBIAN_FRONTEND=noninteractive
@@ -18,6 +18,10 @@ OMEGA_AGENT_VERSION=`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega
 OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
 EN_NAME=${EN_NAME:-eth0}
 OMEGA_PORTS=${OMEGA_PORTS:-5050 8080}
+
+# if iface name provided for this installation process, with -i option #TODO
+# suppose #2 option is the default iface name
+if [ ! -z "$2" ]; then EN_NAME="$2"; fi
 
 check_host_arch()
 {
@@ -138,6 +142,7 @@ select_iface()
         echo "Please check your network"
         exit 1
     fi
+<<<<<<< HEAD
 
     printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
     printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
@@ -168,6 +173,52 @@ select_iface()
         echo "Network interface use default eth0"
         echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
     fi
+=======
+    remaining_count=10
+    while [ ${remaining_count} -gt 0 ]; do
+      printf "\r\033[41mINFO:\033[0m We will use defalut network interface \033[1m${EN_NAME}\033[0m in \033[1m ${remaining_count} \033[0m seconds. Do you want to use another iface \033[41;1m[Y/N](enter)\033[0m"
+      if read -t 1 change_ifcae
+      then
+        printf "\n"
+        case $change_ifcae in
+          Y|y|YES|yes)
+            while true; do
+              echo "Please input iface name from the following list: "
+              for iface in `ls /sys/class/net/`; do
+                printf "\033[1m${iface}\033[0m\n"
+              done
+
+              read -p "iface(enter):" iface
+              check_cmd="ls /sys/class/net/${iface}"
+              if ${check_cmd} > /dev/null 2>&1
+              then
+                EN_NAME=$iface
+                break
+              else
+                printf "\033[41mERROR:\033[0m Network interface ${iface} not found\n"
+              fi
+            done
+            ;;
+          N|n|NO|no)
+            echo "Network interface use default ${EN_NAME}"
+            ;;
+        esac
+        break
+      fi
+      remaining_count=$((remaining_count-1))
+    done
+    printf "\n"
+}
+
+check_iface_exist()
+{
+  check_cmd="ls /sys/class/net/${EN_NAME}"
+  if ! ${check_cmd} > /dev/null 2>&1 ;
+  then
+    printf "\033[41mERROR:\033[0m Network interface ${EN_NAME} not found\n"
+    exit 1
+  fi
+>>>>>>> b83519e... [MOD] iface name default option provide
 }
 
 
@@ -294,6 +345,7 @@ do_install()
 
   deploy_docker
   select_iface
+  check_iface_exist
   check_iptables
   check_omega_ports
 
