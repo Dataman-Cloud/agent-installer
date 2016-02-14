@@ -63,7 +63,7 @@ check_omega_agent() {
       echo "Omega Agent service is running now... "
       echo "Wraning!!! Continue installation will overwrite the original version"
       install_wait=11
-          while true 
+          while true
           do
              if [ $install_wait -eq 1 ]
                   then
@@ -71,7 +71,7 @@ check_omega_agent() {
                   break
              fi
              install_wait=`expr $install_wait - 1`
-             echo "new omega-agent will install after ${install_wait}s" 
+             echo "new omega-agent will install after ${install_wait}s"
              sleep 1s
           done
   fi
@@ -98,15 +98,15 @@ check_selinux() {
         echo "Begin to check selinux by command getenforce..."
         if getenforce | grep "Disabled" > /dev/null; then
               echo "Good. Selinux already closed."
-        else 
+        else
               echo "Error!! Please close you selinux!"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
-  else 
+  else
         echo "Error!! Command getenforce is not exists!"
         exit 1
-  fi 
+  fi
 }
 
 select_iface()
@@ -123,11 +123,11 @@ select_iface()
     echo "Omega-agent use default network interface is eth0."
     echo "Do you want to change it? [Y/N]"
     echo "Warnning!!! We will use defalut network interface after 5 second"
-    if read -t 5 change_ifcae 
+    if read -t 5 change_ifcae
         then
-        case $change_ifcae  in 
+        case $change_ifcae  in
             Y|y|YES|yes)
-            while true; do 
+            while true; do
                 echo "Please choose network interface from below list: "
                 echo `ls /sys/class/net/`
                 read iface
@@ -145,7 +145,7 @@ select_iface()
                 echo "Network interface use default eth0"
             ;;
         esac
-    else 
+    else
         echo "Network interface use default eth0"
         echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
     fi
@@ -213,17 +213,17 @@ EOF
 }
 
 deploy_docker() {
-  echo "-> Deploying Docker Runtime Environment..."
-  if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
-    echo "********************************************************"
-    echo "ERROR!!!!  Docker was not installed or the version is too old"
-    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-    echo "********************************************************"
-    exit 1
+  echo "-> Checking Docker Runtime Environment..."
+  if docker --version | python -c "min=[1, 6]; import sys; v=[int(x) for x in sys.stdin.read().split()[2].split(',')[0].split('.')]; sys.exit(v < min)";
+  then
+    check_docker
+    return
   fi
-
-  check_docker
-
+  echo "********************************************************"
+  echo "ERROR!!!!  Docker was not installed or the version is too old"
+  echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+  echo "********************************************************"
+  exit 1
 }
 
 check_docker() {
