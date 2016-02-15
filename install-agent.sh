@@ -116,7 +116,7 @@ check_omega_ports(){
     echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
     for port in ${OMEGA_PORTS}; do
       if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        echo "ERORR!!! port ${port} listening already, which suppose to be reverved for omega."
+        print "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega."
         exit 1
       fi
     done
@@ -237,7 +237,7 @@ deploy_docker() {
           echo "-> Checking Docker Runtime Environment..."
   else
           echo "********************************************************"
-          echo "ERROR!!! Docker is not found in current enviroment! Please make sure docke is installed!"
+          printf "\033[41mERROR:\033[0m Docker is not found in current enviroment! Please make sure docke is installed!\n"
           echo "********************************************************"
           exit 1
   fi
