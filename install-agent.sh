@@ -244,7 +244,7 @@ deploy_docker() {
   then
           echo "********************************************************"
           echo "ERROR!!!!  The version great than 1.9.* is not support now."
-          echo "We will support it in the near future. Please stay tuned"
+          echo "We will support it as soon as possible"
           echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
           echo "********************************************************"
           exit 1
