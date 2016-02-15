@@ -114,7 +114,7 @@ check_selinux() {
   else 
         printf "\033[41mERROR:\033[0m Command \033[1mgetenforce\033[0m not found\n"
         exit 1
-  fi 
+  fi
 }
 
 check_omega_ports(){
@@ -251,16 +251,17 @@ EOF
   }
 
 deploy_docker() {
-  echo "-> Deploying Docker Runtime Environment..."
-  if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
-    echo "********************************************************"
-    printf "\033[41mERROR:\033[0m  Docker was not installed or the version is too old"
-    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-    echo "********************************************************"
-    exit 1
+  echo "-> Checking Docker Runtime Environment..."
+  if docker --version | python -c "min=[1, 6]; import sys; v=[int(x) for x in sys.stdin.read().split()[2].split(',')[0].split('.')]; sys.exit(v < min)";
+  then
+    check_docker
+    return
   fi
-
-  check_docker
+  echo "********************************************************"
+  echo "ERROR!!!!  Docker was not installed or the version is too old"
+  echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+  echo "********************************************************"
+  exit 1
 }
 
 check_docker() {
