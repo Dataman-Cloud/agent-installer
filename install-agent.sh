@@ -17,6 +17,7 @@ OMEGA_ENV=${OMEGA_ENV:-prod}
 OMEGA_AGENT_VERSION=`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega-agent`
 OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
 EN_NAME=${EN_NAME:-eth0}
+OMEGA_PORTS=${OMEGA_PORTS:-5050 8080}
 
 check_host_arch()
 {
@@ -106,6 +107,24 @@ check_selinux() {
   else
         echo "Error!! Command getenforce is not exists!"
         exit 1
+  fi
+}
+
+check_omega_ports(){
+  if command_exists netstat; then
+
+    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
+    for port in ${OMEGA_PORTS}; do
+      if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
+        echo "ERORR!!! port ${port} listening already, which suppose to be reverved for omega."
+        exit 1
+      fi
+    done
+    echo "End checking OMEGA ports"
+
+  else
+    "Error!! Command netstat does not exists!"
+    exit 1
   fi
 }
 
@@ -276,6 +295,7 @@ do_install()
   deploy_docker
   select_iface
   check_iptables
+  check_omega_ports
 
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
