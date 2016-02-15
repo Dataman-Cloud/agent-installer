@@ -240,10 +240,10 @@ deploy_docker() {
           echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
           echo "********************************************************"
           exit 1
-  elif [ $docker_version -eq 10 ] ;
+  elif [ $docker_version -gt 9 ] ;
   then
           echo "********************************************************"
-          echo "ERROR!!!!  The version of docker 1.10.* is not support now."
+          echo "ERROR!!!!  The version great than 1.9.* is not support now."
           echo "We will support it in the near future. Please stay tuned"
           echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
           echo "********************************************************"
