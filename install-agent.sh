@@ -35,7 +35,7 @@ check_omega_uuid_exists()
 {
   if [ -z "$OMEGA_UUID" ]
   then
-      echo 'ERROR: you should install omega-agent with OmegaUUID, like:'
+      printf "\033[41mERROR:\033[0m you should install omega-agent with OmegaUUID, like:\n"
       echo 'curl -sSL https://dev.dataman.io/install.sh | sh -s [OmegaUUID]'
       exit 1
   fi
@@ -52,7 +52,7 @@ check_curl()
   if command_exists curl; then
      curl='curl --retry 20 --retry-delay 5 -L'
   else
-      echo >&2 'Error: this installer needs curl. You should install curl first.'
+      echo >&2 -e "\033[41mERROR:\033[0m: this installer needs curl. You should install curl first."
       exit 1
   fi
   echo $curl
@@ -62,7 +62,7 @@ check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
     then
       echo "Omega Agent service is running now... "
-      echo "Wraning!!! Continue installation will overwrite the original version"
+      printf "\033[41mWraning:\033[0m Continue installation will overwrite the original version\n"
       install_wait=11
           while true
           do
@@ -72,7 +72,7 @@ check_omega_agent() {
                   break
              fi
              install_wait=`expr $install_wait - 1`
-             echo "new omega-agent will install after ${install_wait}s"
+             echo "new omega-agent will install in ${install_wait}s" 
              sleep 1s
           done
   fi
@@ -84,12 +84,12 @@ check_iptables() {
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
                   echo "Good. Iptables nat already opened."
           else
-                  echo "Error!! Please make sure your iptables nat is opened !"
+                  printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
                   exit 1
           fi
   else
-         echo "Error!! Command iptables is not exists!"
+         printf "\033[41mERROR:\033[0m Command iptables does not exists\n"
          exit 1
   fi
 }
@@ -99,13 +99,13 @@ check_selinux() {
         echo "Begin to check selinux by command getenforce..."
         if getenforce | grep "Disabled" > /dev/null; then
               echo "Good. Selinux already closed."
-        else
-              echo "Error!! Please close you selinux!"
+        else 
+              printf "\033[41mERROR:\033[0m to make this installation proceeding, please make sure selinux disabled\n"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
-  else
-        echo "Error!! Command getenforce is not exists!"
+  else 
+        printf "\033[41mERROR:\033[0m Command \033[1mgetenforce\033[0m not found\n"
         exit 1
   fi
 }
@@ -134,15 +134,15 @@ select_iface()
     if ping -q -c 1 -W 1 $REGISTRY_URL >/dev/null; then
         echo "The network to connect $REGISTRY_URL is good "
     else
-        echo "ERROR!!! The network can not connect to $REGISTRY_URL"
+        printf "\033[41mERROR:\033[0m The network can not connect to $REGISTRY_URL\n"
         echo "Please check your network"
         exit 1
     fi
 
-    echo "Omega-agent use default network interface is eth0."
-    echo "Do you want to change it? [Y/N]"
-    echo "Warnning!!! We will use defalut network interface after 5 second"
-    if read -t 5 change_ifcae
+    printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
+    printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
+    printf "\033[41mWARN:\033[0m We will use defalut network interface after 5 second\n"
+    if read -t 5 change_ifcae 
         then
         case $change_ifcae  in
             Y|y|YES|yes)
@@ -160,7 +160,7 @@ select_iface()
                 fi
             done
             ;;
-            N|n|NO|no|*)
+            N|n|NO|no)
                 echo "Network interface use default eth0"
             ;;
         esac
@@ -218,7 +218,7 @@ EOF
   service omega-agent stop
 EOF
   service omega-agent restart > /dev/null 2>&1
-  echo "-> Done!"
+  printf "\033[31m Omega Agent Installation Done\033[0m\n"
   cat <<EOF
 
   *******************************************************************************
@@ -278,7 +278,7 @@ check_docker() {
   then
       echo "Docker service is running now......."
   else
-      echo "ERROR!!!! Docker is not running now. Please start docker."
+      printf "\033[41mERROR:\033[0m Docker is not running now. Please start docker.\n"
       exit 1
   fi
 }
@@ -312,12 +312,12 @@ do_install()
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
             if [ $lsb_version '<' 7 ]
             then
-                    echo "ERROR!!! CentOS version is Unsupported"
+                    printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
                     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
                     exit 1
             fi
     else
-            echo "ERROR!!! CentOS version is Unsupported"
+            printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
             echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
             exit 1
     fi
@@ -345,7 +345,7 @@ do_install()
     exit 0
     ;;
     *)
-      echo "ERROR!! Unknown Systerm !!!!"
+      printf "\033[41mERROR\033[0m Unknown Operating System\n"
       echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
     ;;
   esac
