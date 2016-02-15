@@ -213,17 +213,45 @@ EOF
 }
 
 deploy_docker() {
-  echo "-> Checking Docker Runtime Environment..."
-  if docker --version | python -c "min=[1, 6]; import sys; v=[int(x) for x in sys.stdin.read().split()[2].split(',')[0].split('.')]; sys.exit(v < min)";
+  if command_exists docker; 
   then
-    check_docker
-    return
+          echo "-> Checking Docker Runtime Environment..."
+  else
+          echo "********************************************************"
+          echo "ERROR!!! Docker is not found in current enviroment! Please make sure docke is installed!"
+          echo "********************************************************"
+          exit 1
   fi
-  echo "********************************************************"
-  echo "ERROR!!!!  Docker was not installed or the version is too old"
-  echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-  echo "********************************************************"
-  exit 1
+
+  local docker_version
+  docker_version=0
+  if docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
+  then
+          echo "get docker version successfully"
+  else
+          echo "ERROR!!! Get or parse docker version failed."
+          exit 1
+  fi
+
+  if [ $docker_version -lt 6 ] ;
+  then
+          echo "********************************************************"
+          echo "ERROR!!!!  The installed docker version is too old"
+          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+          echo "********************************************************"
+          exit 1
+  elif [ $docker_version -gt 9 ] ;
+  then
+          echo "********************************************************"
+          echo "ERROR!!!!  The version great than 1.9.* is not support now."
+          echo "We will support it as soon as possible"
+          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+          echo "********************************************************"
+          exit 1
+  else
+          check_docker
+          return
+  fi
 }
 
 check_docker() {
