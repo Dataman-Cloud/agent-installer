@@ -115,7 +115,7 @@ check_omega_ports(){
 
     echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
     for port in ${OMEGA_PORTS}; do
-      if netstat -ant | grep ${port} | grep LISTEN  2>&1 > /dev/null ; then
+      if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
         echo "ERORR!!! port ${port} listening already, which suppose to be reverved for omega."
         exit 1
       fi
