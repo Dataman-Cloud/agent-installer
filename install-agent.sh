@@ -106,27 +106,6 @@ check_selinux() {
   else 
         printf "\033[41mERROR:\033[0m Command \033[1mgetenforce\033[0m not found\n"
         exit 1
-<<<<<<< HEAD
-=======
-  fi 
-}
-
-check_omega_ports(){
-  if command_exists netstat; then
-
-    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] are available or not"
-    for port in ${OMEGA_PORTS}; do
-      if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        printf "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega.\n"
-        exit 1
-      fi
-    done
-    echo "End checking OMEGA ports"
-
-  else
-    printf "\033[41mERROR\033[0m Command \033[1mnetstat\033[0m does not exists\n"
-    exit 1
->>>>>>> 90ee121... [MOD] printf instead of echo -e as `echo -e` does not well function in sh env
   fi
 }
 
@@ -141,17 +120,10 @@ select_iface()
         exit 1
     fi
 
-<<<<<<< HEAD
-    echo -e "Omega-agent use default network interface is \e[1meth0\e[0m."
-    echo -e "Do you want to change it? \e[41m[Y/N]\e[0m"
-    echo -e "\e[41mWARN:\e[0m We will use defalut network interface after 5 second"
-    if read -t 5 change_ifcae
-=======
     printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
     printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
     printf "\033[41mWARN:\033[0m We will use defalut network interface after 5 second\n"
     if read -t 5 change_ifcae 
->>>>>>> 90ee121... [MOD] printf instead of echo -e as `echo -e` does not well function in sh env
         then
         case $change_ifcae  in
             Y|y|YES|yes)
@@ -241,7 +213,6 @@ EOF
 }
 
 deploy_docker() {
-<<<<<<< HEAD
   if command_exists docker; 
   then
           echo "-> Checking Docker Runtime Environment..."
@@ -281,18 +252,6 @@ deploy_docker() {
           check_docker
           return
   fi
-=======
-  echo "-> Deploying Docker Runtime Environment..."
-  if [ -z "$(which docker)" ]  || [ $(docker -v | awk -F ',' '{print $1}'| awk '{print $3}') \< "1.5.0" ]; then
-    echo "********************************************************"
-    printf "\033[41mERROR:\033[0m  Docker was not installed or the version is too old"
-    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-    echo "********************************************************"
-    exit 1
-  fi
-
-  check_docker
->>>>>>> 90ee121... [MOD] printf instead of echo -e as `echo -e` does not well function in sh env
 }
 
 check_docker() {
