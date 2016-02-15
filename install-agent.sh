@@ -142,38 +142,6 @@ select_iface()
         echo "Please check your network"
         exit 1
     fi
-<<<<<<< HEAD
-
-    printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
-    printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
-    printf "\033[41mWARN:\033[0m We will use defalut network interface after 5 second\n"
-    if read -t 5 change_ifcae 
-        then
-        case $change_ifcae  in
-            Y|y|YES|yes)
-            while true; do
-                echo "Please choose network interface from below list: "
-                echo `ls /sys/class/net/`
-                read iface
-                check_cmd="ls /sys/class/net/${iface}"
-                if ${check_cmd} > /dev/null
-                    then
-                    EN_NAME=$iface
-                    break
-                else
-                    echo "Network interface ${iface} not find"
-                fi
-            done
-            ;;
-            N|n|NO|no)
-                echo "Network interface use default eth0"
-            ;;
-        esac
-    else
-        echo "Network interface use default eth0"
-        echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
-    fi
-=======
     remaining_count=10
     while [ ${remaining_count} -gt 0 ]; do
       printf "\r\033[41mINFO:\033[0m We will use defalut network interface \033[1m${EN_NAME}\033[0m in \033[1m ${remaining_count} \033[0m seconds. Do you want to use another iface \033[41;1m[Y/N](enter)\033[0m"
@@ -218,7 +186,6 @@ check_iface_exist()
     printf "\033[41mERROR:\033[0m Network interface ${EN_NAME} not found\n"
     exit 1
   fi
->>>>>>> b83519e... [MOD] iface name default option provide
 }
 
 
