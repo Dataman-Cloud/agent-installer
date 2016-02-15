@@ -172,10 +172,10 @@ get_distribution_type()
     lsb_dist="$(. /etc/os-release && echo "$ID")"
   fi
   if [ -z "$lsb_dist" ] && [ -r /etc/centos-release ]; then
-    lsb_dist="centos"
+    lsb_dist="$(cat /etc/*-release | head -n1 | cut -d " " -f1)"
   fi
   if [ -z "$lsb_dist" ] && [ -r /etc/redhat-release ]; then
-    lsb_dist="rhel"
+    lsb_dist="$(cat /etc/*-release | head -n1 | cut -d " " -f1)"
   fi
   lsb_dist="$(echo $lsb_dist | cut -d " " -f1)"
   lsb_dist="$(echo "$lsb_dist" | tr '[:upper:]' '[:lower:]')"
@@ -257,7 +257,7 @@ do_install()
     )
     exit 1
     ;;
-    fedora|centos|rhel)
+    fedora|centos|rhel|redhatenterpriseserver)
     (
      check_selinux
      if [ -r /etc/os-release ]; then
