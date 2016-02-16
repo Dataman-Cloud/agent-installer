@@ -259,7 +259,7 @@ deploy_docker() {
           echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
           echo "********************************************************"
           exit 1
-  elif [ $docker_version -gt 9 ] ;
+  elif [ $docker_version -gt 11 ] ;
   then
           echo "********************************************************"
           echo "ERROR!!!!  The version great than 1.9.* is not support now."
