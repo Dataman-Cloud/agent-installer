@@ -150,6 +150,7 @@ do_install() {
 			Error!!! You have been installed docker and version is great than 1.9.1.
 			We are so sorry to tell you that we don't support docker version v1.10+ now. 
 			Please wait. We will support it as soon as possible.
+			Now please remove current docker service and install docker with v1.9.1. Thank you!.
 			EOF
 			exit 1
 		fi
@@ -444,12 +445,12 @@ do_install() {
 			if [ "$lsb_dist" = "fedora" ] && [ "$dist_version" -ge "22" ]; then
 				(
 					set -x
-					$sh_c 'sleep 3; dnf -y -q install docker-engine=1.9.1-0*'
+					$sh_c 'sleep 3; dnf -y -q install docker-engine-1.9.1'
 				)
 			else
 				(
 					set -x
-					$sh_c 'sleep 3; yum -y -q install docker-engine=1.9.1-0*'
+					$sh_c 'sleep 3; yum -y -q install docker-engine-1.9.1'
 				)
 			fi
 			echo_docker_as_nonroot
