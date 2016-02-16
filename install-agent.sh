@@ -17,7 +17,7 @@ OMEGA_ENV=${OMEGA_ENV:-prod}
 OMEGA_AGENT_VERSION=`curl -Ls https://www.shurenyun.com/version/$OMEGA_ENV-omega-agent`
 OMEGA_AGENT_NAME="omega-agent-$OMEGA_AGENT_VERSION"
 EN_NAME=${EN_NAME:-eth0}
-OMEGA_PORTS=${OMEGA_PORTS:-5050 8080}
+OMEGA_PORTS=`curl -Ls https://www.shurenyun.com/omega-ports/$OMEGA_ENV-ports`
 
 check_host_arch()
 {
@@ -116,7 +116,7 @@ check_omega_ports(){
     echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
     for port in ${OMEGA_PORTS}; do
       if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        print "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega."
+        printf "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega.\n"
         exit 1
       fi
     done
