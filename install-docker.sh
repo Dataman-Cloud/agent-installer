@@ -132,7 +132,7 @@ do_install() {
 	if command_exists docker; then
 		version="$(docker -v | awk -F '[ ,]+' '{ print $3 }')"
 		MAJOR_W=1
-		MINOR_W=9
+		MINOR_W=10
 
 		semverParse $version
 
@@ -143,6 +143,15 @@ do_install() {
 
 		if [ $major -le $MAJOR_W ] && [ $minor -lt $MINOR_W ]; then
 			shouldWarn=1
+		fi 
+
+		if [ $major -le $MAJOR_W ] && [ $minor -ge $MINOR_W ]; then
+			cat >&2 <<-'EOF'
+			Error!!! You have been installed docker and version is great than 1.9.1.
+			We are so sorry to tell you that we don't support docker version v1.10+ now. 
+			Please wait. We will support it as soon as possible.
+			EOF
+			exit 1
 		fi
 
 		cat >&2 <<-'EOF'
