@@ -417,7 +417,7 @@ do_install() {
 			$sh_c "apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys ${gpg_fingerprint} || apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys ${gpg_fingerprint}"
 			$sh_c "mkdir -p /etc/apt/sources.list.d"
 			$sh_c "echo deb [arch=$(dpkg --print-architecture)] ${apt_url}/repo ${lsb_dist}-${dist_version} ${repo} > /etc/apt/sources.list.d/docker.list"
-			$sh_c 'sleep 3; apt-get update; apt-get install -y -q docker-engine=1.9.1-0*'
+			$sh_c 'sleep 3; apt-get update; apt-get install -y -q docker-engine=1.9.1-0~trusty'
 			)
 			echo_docker_as_nonroot
 			exit 0
