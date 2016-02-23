@@ -305,7 +305,7 @@ do_install()
     )
     exit 1
     ;;
-    fedora|centos|rhel)
+    fedora|centos|rhel|redhatenterpriseserver)
     (
      check_selinux
      if [ -r /etc/os-release ]; then
