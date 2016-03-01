@@ -1,6 +1,6 @@
 {
-    "version": "1.7.1",
-    "downloadUrl": "https://files.tutum.co/packages/docker/docker-1.9.1",
-    "checksumMd5Url": "https://files.tutum.co/packages/docker/docker-1.9.1.md5",
-    "checksumSha256Url": "https://files.tutum.co/packages/docker/docker-1.9.1.sha256"
+    "version": "1.9.1",
+    "downloadUrl": "https://raw.githubusercontent.com/Dataman-Cloud/agent-installer/dev/docker-1.9.1",
+    "checksumMd5Url": "https://raw.githubusercontent.com/Dataman-Cloud/agent-installer/dev/docker-1.9.1.md5",
+    "checksumSha256Url": "https://raw.githubusercontent.com/Dataman-Cloud/agent-installer/dev/docker-1.9.1.md5"
 }
