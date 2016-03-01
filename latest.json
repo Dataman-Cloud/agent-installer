@@ -1,7 +1,6 @@
 {
     "version": "1.7.1",
-    "downloadUrl": "https://files.tutum.co/packages/docker/docker-1.7.1",
-    "signature_url": "https://files.tutum.co/packages/docker/docker-1.7.1.sig",
-    "checksumMd5Url": "https://files.tutum.co/packages/docker/docker-1.7.1.md5",
-    "checksumSha256Url": "https://files.tutum.co/packages/docker/docker-1.7.1.sha256"
+    "downloadUrl": "https://files.tutum.co/packages/docker/docker-1.9.1",
+    "checksumMd5Url": "https://files.tutum.co/packages/docker/docker-1.9.1.md5",
+    "checksumSha256Url": "https://files.tutum.co/packages/docker/docker-1.9.1.sha256"
 }
