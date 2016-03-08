@@ -292,7 +292,7 @@ do_install()
   curl=$(check_curl)
   check_omega_agent
 
-  deploy_docker
+  # deploy_docker
   select_iface
   check_iptables
   check_omega_ports
