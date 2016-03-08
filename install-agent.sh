@@ -294,7 +294,7 @@ do_install()
 
   # deploy_docker
   select_iface
-  check_iptables
+  # check_iptables
   check_omega_ports
 
   case "$(get_distribution_type)" in
