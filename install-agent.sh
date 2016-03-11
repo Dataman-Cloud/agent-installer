@@ -141,7 +141,7 @@ select_iface()
 
     printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
     printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
-    printf "\033[41mWARN:\033[0m We will use defalut network interface after 5 second\n"
+    printf "\033[41mWARN:\033[0m We will use default network interface after 5 second\n"
     if read -t 5 change_ifcae 
         then
         case $change_ifcae  in
