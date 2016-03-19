@@ -25,7 +25,7 @@ check_host_arch()
     cat <<EOF
 ERROR: Unsupported architecture: $(uname -m)
 Only x86_64 architectures are supported at this time
-Learn more: https://dataman.kf5.com/posts/view/110837/
+Learn more: https://dataman.kf5.com/posts/view/131402
 EOF
     exit 1
   fi
@@ -35,7 +35,7 @@ check_omega_uuid_exists()
 {
   if [ -z "$OMEGA_UUID" ]
   then
-      printf "\033[41mERROR:\033[0m you should install omega-agent with OmegaUUID, like:\n"
+      printf "\033[41mERROR:\033[0m You should install omega-agent with OmegaUUID, like:\n"
       echo 'curl -sSL https://dev.dataman.io/install.sh | sh -s [OmegaUUID]'
       exit 1
   fi
@@ -62,7 +62,7 @@ check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
     then
       echo "Omega Agent service is running now... "
-      printf "\033[41mWarning:\033[0m Continue installation will overwrite the original version\n"
+      printf "\033[41mWarning:\033[0m Continue installation will overwrite the original version.\n"
       install_wait=11
           while true
           do
@@ -72,7 +72,7 @@ check_omega_agent() {
                   break
              fi
              install_wait=`expr $install_wait - 1`
-             echo "new omega-agent will install in ${install_wait}s" 
+             echo "New omega-agent will install in ${install_wait}s"
              sleep 1s
           done
   fi
@@ -84,12 +84,12 @@ check_iptables() {
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
                   echo "Good. Iptables nat already opened."
           else
-                  printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open\n"
+                  printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open.\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
                   exit 1
           fi
   else
-         printf "\033[41mERROR:\033[0m Command iptables does not exists\n"
+         printf "\033[41mERROR:\033[0m Command iptables does not exists.\n"
          exit 1
   fi
 }
@@ -98,13 +98,13 @@ check_selinux() {
   if command_exists getenforce; then
         echo "Begin to check selinux by command getenforce..."
         if getenforce | grep "Disabled" > /dev/null; then
-              echo "Good. Selinux already closed."
-        else 
-              printf "\033[41mERROR:\033[0m to make this installation proceeding, please make sure selinux disabled\n"
+              echo "Good selinux already closed."
+        else
+              printf "\033[41mERROR:\033[0m Please make selinux disabled and then try to install agent again.\n"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
-  else 
+  else
         printf "\033[41mERROR:\033[0m Command \033[1mgetenforce\033[0m not found\n"
         exit 1
   fi
@@ -113,14 +113,14 @@ check_selinux() {
 check_omega_ports(){
   if command_exists netstat; then
 
-    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available"
+    echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available."
     for port in ${OMEGA_PORTS}; do
       if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        printf "\033[41mERORR:\033[0m port ${port} listening already, which suppose to be reverved for omega.\n"
+        printf "\033[41mERORR:\033[0m Port ${port} listening already, which suppose to be reserved for omega.\n"
         exit 1
       fi
     done
-    echo "End checking OMEGA ports"
+    echo "End checking OMEGA ports."
 
   else
     "Error!! Command netstat does not exists!"
@@ -132,17 +132,17 @@ select_iface()
 {
     # ping registry.shurenyun.com
     if ping -q -c 1 -W 1 $REGISTRY_URL >/dev/null; then
-        echo "The network to connect $REGISTRY_URL is good "
+        echo "The network to connect $REGISTRY_URL is good."
     else
-        printf "\033[41mERROR:\033[0m The network can not connect to $REGISTRY_URL\n"
-        echo "Please check your network"
+        printf "\033[41mERROR:\033[0m The network can not connect to $REGISTRY_URL.\n"
+        echo "Please check your network."
         exit 1
     fi
 
-    printf "Omega-agent use default network interface is \033[1meth0\033[0m.\n"
-    printf "Do you want to change it? \033[41m[Y/N]\033[0m\n"
-    printf "\033[41mWARN:\033[0m We will use default network interface after 5 second\n"
-    if read -t 5 change_ifcae 
+    printf "Omega-agent use default network interface \033[1meth0\033[0m.\n"
+    printf "Do you want to change it? \033[41m[Y/N]\033[0m.\n"
+    printf "\033[41mWARN:\033[0m We will use default network interface after 5 second.\n"
+    if read -t 5 change_ifcae
         then
         case $change_ifcae  in
             Y|y|YES|yes)
@@ -156,16 +156,16 @@ select_iface()
                     EN_NAME=$iface
                     break
                 else
-                    echo "Network interface ${iface} not find"
+                    echo "Network interface ${iface} can't be found."
                 fi
             done
             ;;
             N|n|NO|no)
-                echo "Network interface use default eth0"
+                echo "Network interface use default eth0."
             ;;
         esac
     else
-        echo "Network interface use default eth0"
+        echo "Network interface use default eth0."
         echo "Learn more: https://dataman.kf5.com/posts/view/113452/"
     fi
 }
@@ -218,26 +218,26 @@ EOF
   service omega-agent stop
 EOF
   service omega-agent restart > /dev/null 2>&1
-  printf "\033[31m Omega Agent Installation Done\033[0m\n"
+  printf "\033[31m Omega agent installation done\033[0m.\n"
   cat <<EOF
 
   *******************************************************************************
-  Omega Agent installed successfully
+  Omega agent installed successfully
   *******************************************************************************
 
-  You can view omega-agent log at /var/log/omega/agent.log
-  And You can Start or Stop omega-agent with: service omega-agent start/stop/restart/status
+  You can view omega-agent log at /var/log/omega/agent.log.
+  And you can start or stop omega-agent with: service omega-agent start/stop/restart/status.
 
 EOF
 }
 
 deploy_docker() {
-  if command_exists docker; 
+  if command_exists docker;
   then
-          echo "-> Checking Docker Runtime Environment..."
+          echo "-> Checking docker runtime environment..."
   else
           echo "********************************************************"
-          printf "\033[41mERROR:\033[0m Docker is not found in current enviroment! Please make sure docke is installed!\n"
+          printf "\033[41mERROR:\033[0m Docker is not found in current host! Please make sure docker is installed!\n"
           echo "********************************************************"
           exit 1
   fi
@@ -246,7 +246,7 @@ deploy_docker() {
   docker_version=0
   if docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
   then
-          echo "get docker version successfully"
+          echo "Get docker version successfully."
   else
           echo "ERROR!!! Get or parse docker version failed."
           exit 1
@@ -256,7 +256,7 @@ deploy_docker() {
   then
           echo "********************************************************"
           echo "ERROR!!!!  The installed docker version is too old"
-          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+          echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
           exit 1
   elif [ $docker_version -gt 9 ] ;
@@ -264,7 +264,7 @@ deploy_docker() {
           echo "********************************************************"
           echo "ERROR!!!!  The version great than 1.9.* is not support now."
           echo "We will support it as soon as possible"
-          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+          echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
           exit 1
   else
@@ -300,8 +300,8 @@ do_install()
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
     (
-      echo "-> it's unsupported by omega-agent "
-      echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+      echo "-> It's unsupported by omega-agent "
+      echo "Learn more: https://dataman.kf5.com/posts/view/131402"
     )
     exit 1
     ;;
@@ -312,13 +312,13 @@ do_install()
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
             if [ $lsb_version '<' 7 ]
             then
-                    printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
-                    echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+                    printf "\033[41mERROR:\033[0m CentOS version is unsupported\n"
+                    echo "Learn more: https://dataman.kf5.com/posts/view/131402/"
                     exit 1
             fi
     else
-            printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
-            echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+            printf "\033[41mERROR:\033[0m CentOS version is unsupported\n"
+            echo "Learn more: https://dataman.kf5.com/posts/view/131402/"
             exit 1
     fi
     echo "-> Installing omega-agent..."
@@ -345,8 +345,8 @@ do_install()
     exit 0
     ;;
     *)
-      printf "\033[41mERROR\033[0m Unknown Operating System\n"
-      echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
+      printf "\033[41mERROR\033[0m Unknown operating system\n"
+      echo "Learn more: https://dataman.kf5.com/posts/view/131402"
     ;;
   esac
 }
