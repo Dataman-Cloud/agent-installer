@@ -257,7 +257,7 @@ do_install()
      check_selinux
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
-            if [[ $lsb_version lt 7 ]]
+            if [ [ $lsb_version lt 7 ] ]
             then
                     printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
                     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
