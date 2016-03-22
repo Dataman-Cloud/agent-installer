@@ -104,7 +104,7 @@ check_selinux() {
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
-  else 
+  else
         printf "\033[41mERROR:\033[0m Command \033[1mgetenforce\033[0m not found\n"
         exit 1
   fi
@@ -231,58 +231,6 @@ EOF
 EOF
 }
 
-deploy_docker() {
-  if command_exists docker; 
-  then
-          echo "-> Checking Docker Runtime Environment..."
-  else
-          echo "********************************************************"
-          printf "\033[41mERROR:\033[0m Docker is not found in current enviroment! Please make sure docke is installed!\n"
-          echo "********************************************************"
-          exit 1
-  fi
-
-  local docker_version
-  docker_version=0
-  if docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
-  then
-          echo "get docker version successfully"
-  else
-          echo "ERROR!!! Get or parse docker version failed."
-          exit 1
-  fi
-
-  if [ $docker_version -lt 6 ] ;
-  then
-          echo "********************************************************"
-          echo "ERROR!!!!  The installed docker version is too old"
-          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-          echo "********************************************************"
-          exit 1
-  elif [ $docker_version -gt 9 ] ;
-  then
-          echo "********************************************************"
-          echo "ERROR!!!!  The version great than 1.9.* is not support now."
-          echo "We will support it as soon as possible"
-          echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
-          echo "********************************************************"
-          exit 1
-  else
-          check_docker
-          return
-  fi
-}
-
-check_docker() {
-  if ps ax | grep -v grep | grep "docker " > /dev/null
-  then
-      echo "Docker service is running now......."
-  else
-      printf "\033[41mERROR:\033[0m Docker is not running now. Please start docker.\n"
-      exit 1
-  fi
-}
-
 lsb_version=""
 do_install()
 {
@@ -292,7 +240,6 @@ do_install()
   curl=$(check_curl)
   check_omega_agent
 
-  deploy_docker
   select_iface
   check_iptables
   check_omega_ports
@@ -310,7 +257,7 @@ do_install()
      check_selinux
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
-            if [ $lsb_version '<' 7 ]
+            if [[ $lsb_version lt 7 ]]
             then
                     printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
                     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
@@ -322,12 +269,18 @@ do_install()
             exit 1
     fi
     echo "-> Installing omega-agent..."
-    echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
-    $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
     if command_exists /usr/bin/omega-agent; then
       yum remove -y -q omega-agent
     fi
-    yum install -y -q /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm
+
+ 		cat > /etc/yum.repos.d/shurenyun.repo <<EOF
+[shurenyun]
+name=shurenyun
+baseurl=http://10.3.10.32/yum/centos/7/x86_64
+enabled=0
+gpgcheck=0
+EOF
+    yum install -y -q omega-agent
 
     start_omega_agent
     )
