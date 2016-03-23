@@ -252,14 +252,14 @@ deploy_docker() {
           exit 1
   fi
 
-  if [ "$docker_version" -lt 6 ] ;
+  if [[ "$docker_version" -lt 6 ]] ;
   then
           echo "********************************************************"
           echo "ERROR!!!!  The installed docker version is too old"
           echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
           exit 1
-  elif [ "$docker_version" -gt 9 ] ;
+  elif [[ "$docker_version" -gt 9 ]] ;
   then
           echo "********************************************************"
           echo "ERROR!!!!  The version that is greater than 1.9.* is not support now."
