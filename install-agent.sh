@@ -277,7 +277,7 @@ do_install()
 [shurenyun]
 name=shurenyun
 baseurl=http://10.3.10.32/yum/centos/7/x86_64
-enabled=0
+enabled=1
 gpgcheck=0
 EOF
     yum install -y -q omega-agent
