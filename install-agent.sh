@@ -24,7 +24,7 @@ check_host_arch()
   if [ "$(uname -m)" != "x86_64" ]; then
     cat <<EOF
 ERROR: Unsupported architecture: $(uname -m)
-Only x86_64 architectures are supported at this time
+Only x86_64 architectures are supported currently.
 Learn more: https://dataman.kf5.com/posts/view/131402
 EOF
     exit 1
@@ -52,7 +52,7 @@ check_curl()
   if command_exists curl; then
      curl='curl --retry 20 --retry-delay 5 -L'
   else
-      echo >&2 -e "\033[41mERROR:\033[0m: this installer needs curl. You should install curl first."
+      echo >&2 -e "\033[41mERROR:\033[0m: This installer needs curl. You should install curl firstly."
       exit 1
   fi
   echo $curl
@@ -62,7 +62,7 @@ check_omega_agent() {
   if ps ax | grep -v grep | grep "omega-agent" > /dev/null
     then
       echo "Omega Agent service is running now... "
-      printf "\033[41mWarning:\033[0m Continue installation will overwrite the original version.\n"
+      printf "\033[41mWarning:\033[0m Continue to install will overwrite the running version.\n"
       install_wait=11
           while true
           do
@@ -84,7 +84,7 @@ check_iptables() {
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
                   echo "Good. Iptables nat already opened."
           else
-                  printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open.\n"
+                  printf "\033[41mERROR:\033[0m Please make sure iptables nat is open.\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
                   exit 1
           fi
@@ -96,11 +96,11 @@ check_iptables() {
 
 check_selinux() {
   if command_exists getenforce; then
-        echo "Begin to check selinux by command getenforce..."
+        echo "Begin to check SELinux by command getenforce..."
         if getenforce | grep "Disabled" > /dev/null; then
-              echo "Good selinux already closed."
+              echo "Good SELinux already closed."
         else
-              printf "\033[41mERROR:\033[0m Please make selinux disabled and then try to install agent again.\n"
+              printf "\033[41mERROR:\033[0m Please make SELinux disabled and then try to install agent again.\n"
               echo "Learn more: https://dataman.kf5.com/posts/view/124303/"
         exit 1
         fi
@@ -116,7 +116,7 @@ check_omega_ports(){
     echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available."
     for port in ${OMEGA_PORTS}; do
       if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
-        printf "\033[41mERORR:\033[0m Port ${port} listening already, which suppose to be reserved for omega.\n"
+        printf "\033[41mERROR:\033[0m Port ${port} listening already, which suppose to be reserved for omega.\n"
         exit 1
       fi
     done
@@ -141,7 +141,7 @@ select_iface()
 
     printf "Omega-agent use default network interface \033[1meth0\033[0m.\n"
     printf "Do you want to change it? \033[41m[Y/N]\033[0m.\n"
-    printf "\033[41mWARN:\033[0m We will use default network interface after 5 second.\n"
+    printf "\033[41mWARN:\033[0m We will use default network interface after 5 seconds.\n"
     if read -t 5 change_ifcae
         then
         case $change_ifcae  in
@@ -218,7 +218,7 @@ EOF
   service omega-agent stop
 EOF
   service omega-agent restart > /dev/null 2>&1
-  printf "\033[31m Omega agent installation done\033[0m.\n"
+  printf "\033[31m Omega agent installation is done\033[0m.\n"
   cat <<EOF
 
   *******************************************************************************
@@ -262,7 +262,7 @@ deploy_docker() {
   elif [ "$docker_version" -gt 9 ] ;
   then
           echo "********************************************************"
-          echo "ERROR!!!!  The version great than 1.9.* is not support now."
+          echo "ERROR!!!!  The version that is greater than 1.9.* is not support now."
           echo "We will support it as soon as possible"
           echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
@@ -300,7 +300,7 @@ do_install()
   case "$(get_distribution_type)" in
     gentoo|boot2docker|amzn|linuxmint)
     (
-      echo "-> It's unsupported by omega-agent "
+      echo "-> It's unsupported by omega-agent."
       echo "Learn more: https://dataman.kf5.com/posts/view/131402"
     )
     exit 1
@@ -317,7 +317,7 @@ do_install()
                     exit 1
             fi
     else
-            printf "\033[41mERROR:\033[0m CentOS version is unsupported\n"
+            printf "\033[41mERROR:\033[0m CentOS version is unsupported.\n"
             echo "Learn more: https://dataman.kf5.com/posts/view/131402/"
             exit 1
     fi
@@ -345,7 +345,7 @@ do_install()
     exit 0
     ;;
     *)
-      printf "\033[41mERROR\033[0m Unknown operating system\n"
+      printf "\033[41mERROR\033[0m Unknown operating system.\n"
       echo "Learn more: https://dataman.kf5.com/posts/view/131402"
     ;;
   esac
