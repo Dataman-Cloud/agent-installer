@@ -84,9 +84,8 @@ check_iptables() {
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
                   echo "Good. Iptables nat already opened."
           else
-                  printf "\033[41mERROR:\033[0m Please make sure your iptables nat is open\n"
+                  printf "\033[41mWARN:\033[0m Please make sure your iptables nat is open\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
-                  exit 1
           fi
   else
          printf "\033[41mERROR:\033[0m Command iptables does not exists\n"
