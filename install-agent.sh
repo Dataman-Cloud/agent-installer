@@ -257,7 +257,7 @@ do_install()
      check_selinux
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
-            if [ [ $lsb_version lt 7 ] ]
+            if [[ "$lsb_version" lt 7 ]]
             then
                     printf "\033[41mERROR:\033[0m CentOS version is Unsupported\n"
                     echo "Learn more: https://dataman.kf5.com/posts/view/110837/"
@@ -288,11 +288,14 @@ EOF
     ;;
     ubuntu|debian)
     (
-      echo "-> Installing omega-agent..."
-      echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb"
-      $curl -o /tmp/${OMEGA_AGENT_NAME}_amd64.deb ${FILES_URL}/${OMEGA_AGENT_NAME}_amd64.deb
-      dpkg -i /tmp/${OMEGA_AGENT_NAME}_amd64.deb
+      echo "-> Installing required dependencies..."
+      modprobe -q aufs || apt-get update -qq && apt-get install -yq linux-image-extra-$(uname -r) || \
+        echo "!! Failed to install linux-image-extra package. AUFS support (which is recommended) may not be available."
 
+      echo "-> Installing omega-agent..."
+      echo deb [arch=amd64] http://10.3.10.32/ shurenyun main > /etc/apt/sources.list.d/shurenyun.list
+      apt-get update -qq -o Dir::Etc::sourceparts="/dev/null" -o APT::List-Cleanup=0 -o Dir::Etc::sourcelist="sources.list.d/shurenyun.list" && apt-get install -yq omega-agent
+      ;;
       start_omega_agent
     )
     exit 0
