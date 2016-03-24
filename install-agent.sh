@@ -292,7 +292,7 @@ EOF
         echo "!! Failed to install linux-image-extra package. AUFS support (which is recommended) may not be available."
 
       echo "-> Installing omega-agent..."
-      echo deb [arch=amd64] http://10.3.10.32/ shurenyun main > /etc/apt/sources.list.d/shurenyun.list
+      echo deb [arch=amd64] http://10.3.10.32/ trusty main > /etc/apt/sources.list.d/shurenyun.list
       apt-get update -qq -o Dir::Etc::sourceparts="/dev/null" -o APT::List-Cleanup=0 -o Dir::Etc::sourcelist="sources.list.d/shurenyun.list" && apt-get install -yq omega-agent
 
       start_omega_agent
