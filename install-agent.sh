@@ -333,6 +333,21 @@ do_install()
     )
     exit 0
     ;;
+    sles|suse)
+    (
+    check_selinux
+    echo "-> Installing omega-agent..."
+    echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
+    $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
+    if command_exists /usr/bin/omega-agent; then
+      zypper --non-interactive remove  omega-agent
+    fi
+    zypper --non-interactive in /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm
+
+    start_omega_agent
+    )
+    exit 0
+    ;;
     ubuntu|debian)
     (
       echo "-> Installing omega-agent..."
