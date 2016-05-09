@@ -78,6 +78,18 @@ check_omega_agent() {
   fi
 }
 
+# CentOS 7 firewall must closed
+check_firewall() {
+  if command_exists firewall-cmd; then
+    echo "Begin to check firewall...."
+    if ps ax | grep -v grep | grep "firewall" > /dev/null; then
+      printf "\033[41mERROR:\033[0m Please close firewall before install dataman-cloud agent. \n"
+      echo "Command <sudo systemctl disable firewalld> and <sudo systemctl stop firewalld> will be useful. \n"
+      exit 1
+    fi
+  fi
+}
+
 check_iptables() {
    if command_exists iptables; then
           echo "Begin to check iptables...."
@@ -307,7 +319,6 @@ do_install()
     ;;
     fedora|centos|rhel|redhatenterpriseserver)
     (
-     check_selinux
      if [ -r /etc/os-release ]; then
             lsb_version="$(. /etc/os-release && echo "$VERSION_ID")"
             if [ $lsb_version '<' 7 ]
@@ -321,6 +332,8 @@ do_install()
             echo "Learn more: https://dataman.kf5.com/posts/view/131402/"
             exit 1
     fi
+    check_selinux
+    check_firewall
     echo "-> Installing omega-agent..."
     echo "-> Downloading omega-agent from ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm"
     $curl -o /tmp/${OMEGA_AGENT_NAME}.x86_64.rpm ${FILES_URL}/${OMEGA_AGENT_NAME}.x86_64.rpm
