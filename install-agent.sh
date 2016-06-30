@@ -94,7 +94,12 @@ check_iptables() {
    if command_exists iptables; then
           echo "Begin to check iptables...."
           if sudo iptables -L | grep "DOCKER" > /dev/null; then
-                  echo "Good. Iptables nat already opened."
+                  if sudo iptables -L | grep "REJECT" > /dev/null; then
+                      printf "\033[41mERROR:\033[0m Some REJECT rules found in iptables, which may cause undesired exceptions, to continue, please remove the REJECT rules and restart Iptables service.\n"
+                      exit 1
+                  else
+                      echo "Good. Iptables nat already opened."
+                  fi
           else
                   printf "\033[41mERROR:\033[0m Please make sure iptables nat is open.\n"
                   echo "Learn more: https://dataman.kf5.com/posts/view/124302/"
