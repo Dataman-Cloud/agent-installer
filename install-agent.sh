@@ -286,7 +286,7 @@ deploy_docker() {
 }
 
 check_docker() {
-  if ps ax | grep -v grep | grep "docker " > /dev/null
+  if ps ax | grep -v grep | grep "docker" > /dev/null
   then
       echo "Docker service is running now......."
   else
