@@ -143,16 +143,6 @@ do_install() {
 
 		if [ $major -le $MAJOR_W ] && [ $minor -lt $MINOR_W ]; then
 			shouldWarn=1
-		fi 
-
-		if [ $major -le $MAJOR_W ] && [ $minor -ge $MINOR_W ]; then
-			cat >&2 <<-'EOF'
-			Error!!! You have been installed docker and version is great than 1.9.1.
-			We are so sorry to tell you that we don't support docker version v1.10+ now. 
-			Please wait. We will support it as soon as possible.
-			Now please remove current docker service and install docker with v1.9.1. Thank you!.
-			EOF
-			exit 1
 		fi
 
 		cat >&2 <<-'EOF'
