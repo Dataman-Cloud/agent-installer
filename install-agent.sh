@@ -264,6 +264,7 @@ deploy_docker() {
           exit 1
   fi
 
+  check_docker
   if [[ "$docker_version" -lt 6 ]] ;
   then
           echo "********************************************************"
@@ -279,9 +280,6 @@ deploy_docker() {
           echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
           exit 1
-  else
-          check_docker
-          return
   fi
 }
 
