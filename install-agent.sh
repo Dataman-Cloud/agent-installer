@@ -254,13 +254,12 @@ deploy_docker() {
           exit 1
   fi
 
-  local docker_version
-  docker_version=0
-  if docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
-  then
-          echo "Get docker version successfully."
-  else
-          echo "ERROR!!! Get or parse docker version failed."
+  docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
+
+  if [ -z $docker_version ];then
+          echo "***********************************************************************"
+	  echo "\033[41mERROR:\033[0m Docker daemon is not running! Run it manually before continue." 
+          echo "***********************************************************************"
           exit 1
   fi
 
@@ -271,19 +270,6 @@ deploy_docker() {
           echo "Learn more: https://dataman.kf5.com/posts/view/131402"
           echo "********************************************************"
           exit 1
-  else
-          check_docker
-          return
-  fi
-}
-
-check_docker() {
-  if ps ax | grep -v grep | grep "docker" > /dev/null
-  then
-      echo "Docker service is running now......."
-  else
-      printf "\033[41mERROR:\033[0m Docker is not running now. Please start docker.\n"
-      exit 1
   fi
 }
 
