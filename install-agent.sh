@@ -254,13 +254,12 @@ deploy_docker() {
           exit 1
   fi
 
-  local docker_version
-  docker_version=0
-  if docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
-  then
-          echo "Get docker version successfully."
-  else
-          echo "ERROR!!! Get or parse docker version failed."
+  docker_version="$(docker version --format '{{.Server.Version}}' | awk -F. '{print $2}')" ;
+
+  if [ -z $docker_version ];then
+          echo "***********************************************************************"
+	  echo "ERROR: Docker daemon is not running! Run it manually before continue." 
+          echo "***********************************************************************"
           exit 1
   fi
 
