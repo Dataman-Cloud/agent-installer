@@ -127,7 +127,7 @@ check_omega_ports(){
 
     echo "Begin checking OMEGA ports [${OMEGA_PORTS}] available."
     for port in ${OMEGA_PORTS}; do
-      if netstat -lant | grep ${port} | grep LISTEN  >/dev/null 2>&1 ; then
+      if netstat -lant | grep ":${port} " | grep LISTEN  >/dev/null 2>&1 ; then
         printf "\033[41mERROR:\033[0m Port ${port} listening already, which suppose to be reserved for omega.\n"
         exit 1
       fi
