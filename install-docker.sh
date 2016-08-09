@@ -147,10 +147,10 @@ do_install() {
 
 		if [ $major -le $MAJOR_W ] && [ $minor -ge $MINOR_W ]; then
 			cat >&2 <<-'EOF'
-			Error!!! You have been installed docker and version is great than 1.9.1.
+			Error!!! You have been installed docker and version is great than 1.11.2.
 			We are so sorry to tell you that we don't support docker version v1.10+ now. 
 			Please wait. We will support it as soon as possible.
-			Now please remove current docker service and install docker with v1.9.1. Thank you!.
+			Now please remove current docker service and install docker with v1.11.2. Thank you!.
 			EOF
 			exit 1
 		fi
@@ -427,7 +427,7 @@ do_install() {
 			$sh_c "apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys ${gpg_fingerprint} || apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys ${gpg_fingerprint}"
 			$sh_c "mkdir -p /etc/apt/sources.list.d"
 			$sh_c "echo deb [arch=$(dpkg --print-architecture)] ${apt_url}/repo ${lsb_dist}-${dist_version} ${repo} > /etc/apt/sources.list.d/docker.list"
-			$sh_c 'sleep 3; apt-get update; apt-get install -y -q docker-engine=1.9.1-0*'
+			$sh_c 'sleep 3; apt-get update; apt-get install -y -q docker-engine=1.11.2-0*'
 			)
 			echo_docker_as_nonroot
 			exit 0
@@ -445,12 +445,12 @@ do_install() {
 			if [ "$lsb_dist" = "fedora" ] && [ "$dist_version" -ge "22" ]; then
 				(
 					set -x
-					$sh_c 'sleep 3; dnf -y -q install docker-engine-1.9.1'
+					$sh_c 'sleep 3; dnf -y -q install docker-engine-1.11.2'
 				)
 			else
 				(
 					set -x
-					$sh_c 'sleep 3; yum -y -q install docker-engine-1.9.1'
+					$sh_c 'sleep 3; yum -y -q install docker-engine-1.11.2'
 				)
 			fi
 			echo_docker_as_nonroot
