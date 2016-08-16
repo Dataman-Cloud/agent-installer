@@ -258,7 +258,7 @@ deploy_docker() {
 
   if [ -z $docker_version ];then
           echo "***********************************************************************"
-	  echo "\033[41mERROR:\033[0m Docker daemon is not running! Run it manually before continue." 
+	  printf "\033[41mERROR:\033[0m Docker daemon is not running! Run it manually before continue.\n" 
           echo "***********************************************************************"
           exit 1
   fi
